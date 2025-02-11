@@ -1,0 +1,111 @@
+{%extends 'html/home.html'%}
+{%block home%}
+<div id="users" style="display:none;">
+{%for users in info.user%}
+    <input value="{{users}}" type="text">
+{%endfor%}
+</div>
+<div id="pub_name" style="display:none;">
+{%for pub_name in info.pub_name%}
+    <input value="{{pub_name}}" type="text">
+{%endfor%}
+</div>
+<div id="msg" style="display:none;">
+{%for msg in info.msg%}
+    <input value="{{msg}}" type="text">
+{%endfor%}
+    </div>
+{%for pub_in in info %}
+<div id="model_requisicao" style="width: 100%;display:flex;flex-direction:column;text-align: -webkit-center;text-transform: capitalize;">
+    <div id="model_requisicao0"></div>
+    <input type="submit" id="bt_aprovado" value="Aprovar">
+    <input type="submit" id="bt_recusar" value="Recusar">
+</div>
+<div id="log">
+
+</div>
+{%endfor%}
+<script>
+
+    setTimeout(function(){for(a=0;a<document.querySelectorAll('#model_requisicao button').length;a++){
+        if(document.querySelectorAll('#model_requisicao button')[a].value=='Recusar'){
+            console.log(document.querySelectorAll('#model_requisicao button')[a])}
+    }},500)
+    function create_tag(tag_name, inner_text, n){
+        tag = document.createElement(`${tag_name}`)
+        if(tag_name=='input'){
+            tag.value=inner_text;
+            tag.readOnly='true'
+            tag.style.textAlign='center'
+            tag.style.color='aliceblue'
+            if(inner_text=='Recusado'){
+                tag.style.background='red'
+            }else{tag.style.background='green'}
+        }else{tag.innerHTML=inner_text}
+        if(tag_name=='input'){document.querySelector('#log').appendChild(tag)}
+            else{document.querySelectorAll('#model_requisicao div')[n].appendChild(tag)}
+    }
+    research_num=0
+    requisicao=''
+    bt_aproveAll = document.querySelectorAll('#model_requisicao #bt_aprovado')
+    bt_recuseAll = document.querySelectorAll('#model_requisicao #bt_recusar')
+    div_container = []
+    bt_aproveAll.forEach((bt_aprove) =>{
+        bt_aprove.addEventListener('click', ()=>{
+            requisicao='Aprovado'
+            bt_aprove.value=true
+            for(a=0;a<document.querySelectorAll('#model_requisicao input').length;a++){
+                
+                if(document.querySelectorAll('#model_requisicao input')[a].value=='true'){
+                    document.querySelectorAll('#model_requisicao input')[a].style.display='none'
+                    document.querySelectorAll('#model_requisicao input')[a+1].style.display='none'
+                    ;break}
+                if(a%2===0 && research_num<parseInt(document.querySelectorAll('#model_requisicao').length)-1){
+                    research_num++
+                    console.log(`Research:${research_num}`)}    
+            }
+            setTimeout(function(){
+                
+                console.log(research_num)
+                create_tag('input', requisicao, research_num)
+                document.querySelectorAll('#model_requisicao')[research_num].remove()
+                
+                research_num=0
+            })
+        })
+    })
+    
+    //efetuar a requisição de recusa
+    bt_recuseAll.forEach((bt_recuse)=>{
+        bt_recuse.addEventListener('click', ()=>{
+            requisicao='Recusado'
+            bt_recuse.value=true
+            for(a=0;a<document.querySelectorAll('#model_requisicao input').length;a++){
+                if(document.querySelectorAll('#model_requisicao input')[a].value=='true'){
+                    
+                    ;break}research_num++
+
+            }
+            setTimeout(function(){
+                document.querySelectorAll('#model_requisicao input')[research_num].style.display='none'
+                document.querySelectorAll('#model_requisicao input')[research_num-1].style.display='none'
+                
+                console.log(research_num)
+                
+                create_tag('input', requisicao, research_num)
+                research_num=0
+            })
+        })
+    })
+    
+    setTimeout(function(){for(a=0;a<document.querySelectorAll('#users input').length; a++){
+        create_tag('p',`O usuario:${document.querySelectorAll('#users input')[a].value}`,a)
+        create_tag('p',`deseja adotar:${document.querySelectorAll('#pub_name input')[a].value}`,a)
+        create_tag('p',`Mensagem:${document.querySelectorAll('#msg input')[a].value}`,a)
+    };
+    
+    },500)
+    
+</script>
+{%endblock%}
+

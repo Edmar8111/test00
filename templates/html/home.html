@@ -1,0 +1,345 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+/* Estilo da barra de navegação */
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+/* Estilo da logo e nome da marca */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 100px;
+    margin-right: 10px;
+}
+
+.brand-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Links de navegação */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-size: 1,5em;
+    color: #6a0dad;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #4b0082;
+}
+
+/* Login/Cadastro */
+.auth-links {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.auth-links a {
+    text-decoration: none;
+    font-size: 1em;
+    color: #000;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.auth-links a:hover {
+    color: #7b00ce;
+}
+
+/*Carrosel*/
+
+
+/* Container geral do carrossel */
+.carousel {
+  position: relative;
+  width: 95%;
+  margin: 20px auto;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Container das imagens */
+.carousel-inner {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Cada item do carrossel */
+.carousel-item {
+  min-width: 100%;
+  height: 300px;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Botões de controle */
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 24px;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.carousel-control.prev {
+  left: 10px;
+}
+
+.carousel-control.next {
+  right: 10px;
+}
+
+.carousel-control:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/*Fim Carrosel*/
+
+/* footer */
+
+/* Estilo geral */
+
+.footer {
+  background-color: #6a2e92; /* Roxo */
+  color: white;
+  padding: 20px 10px;
+  font-family: Arial, sans-serif;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  position: relative;
+  margin-top: 50px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+}
+
+.footer-logo img.logo {
+    width: 321px;
+    height: 214px;
+  
+  margin-right: 10px;
+}
+
+.footer-logo p {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.footer-social {
+  display: flex;
+  gap: 15px;
+  flex: 1.2;
+  align-items: center;
+
+}
+
+.footer-social a {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  
+}
+
+.footer-social a img {
+  width: 100%;
+  height: 100%;
+}
+
+/* Texto do copyright */
+.footer-copyright {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 14px;
+}
+
+/*fim footer */
+    </style>
+    {%block head%}
+    {%endblock%}
+</head>
+<body>
+    <!--NavBar-->
+    <header class="navbar">
+        <div class="logo-container">
+            <img src="{%static 'image/petconnect.svg'%}" alt="PetConnect Logo" class="logo">
+            
+        </div>
+        <nav class="nav-links">
+            <a href="{%url 'home'%}">Home</a>
+            <a href="#find-pets">Encontrar Pets</a>
+            <a href="#contact">Contato</a>
+            <a href="#about">Quem somos?</a>
+        </nav>
+        <div class="auth-links" style="display:{{login_display}};">
+            <i class="bi bi-person-circle fs-4"></i>
+            <a href="{%url 'login'%}" class="ms-2">Login/ Cadastro</a>
+        </div>
+        {%if logout_display%}
+          {%if notification == True %}
+          <form style="display:none;" action="{%url 'notify_request' hash=key_user%}" method="GET">
+            <button id="requisitar_notify"></button>
+          </form>
+          <img id='notification_icon' src="https://www.svgrepo.com/show/474256/notification-bell-new.svg" alt="notification-icon" style="width: 20px;position: absolute;right: 110px;cursor:pointer;">
+          <script>
+            document.querySelector('#notification_icon').addEventListener('click', function(){
+              document.querySelector('#requisitar_notify').click()
+            })
+          </script>
+          {%else%}
+          <img id='notification_icon' src="https://www.svgrepo.com/show/474254/notification-bell.svg" alt="notification-icon" style="width: 20px;position: absolute;right: 110px;cursor:pointer;">
+          {%endif%}
+          <div class="auth-links" style="display:block;">
+            <i class="bi bi-person-circle fs-4"></i>
+            <a href="{%url 'perfil_user' key_inst=key_user%}" value=0  name='menu' class="ms-2">{{user_name}}</a>
+          </div>
+        {%endif%}
+    </header>  
+  <!--Fim NavBar-->
+    {%block home%}
+    {%endblock%}
+    
+<!--Carossel-->
+<div class="carousel">
+    <div class="carousel-inner" id="carrosel">
+      {%for pub_banner in pub_index%}
+      <div class="carousel-item">
+        <img src="{{pub_banner.imgpub.url}}" alt="">
+      </div>
+      {%endfor%}
+    </div>
+    <button class="carousel-control prev" onclick="prevSlide()">❮</button>
+    <button class="carousel-control next" onclick="nextSlide()">❯</button>
+  </div>
+
+  <main style="display: flex;justify-content: center;flex-flow: wrap;">
+    {%for index_pub in pub_index %}
+        <a href="{%url 'post_detail' name=index_pub.titulo hash=key_user id=index_pub.id %}" style="border: 1px solid black;width: 205px;display: flex;align-items: center;flex-direction: column;cursor:pointer;">
+          <img src={{index_pub.imgpub.url}} alt="" style="width: 200px;">
+          <p>NOME: {{index_pub.titulo}}</p>
+          <p>RAÇA: {{index_pub.raca}}</p>
+          <p>CASTRADO: {{index_pub.castrado}}</p>
+          <p>IDADE: {{index_pub.idade}}</p>
+          <p>DATA: {{index_pub.data_pub}}</p>
+          <p>DESCRIÇÃO: {{index_pub.desc}}</p>
+        </a>
+      {%endfor%}
+  </main>
+  
+
+<!--Fim Carossel-->   
+
+<!--Footer-->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+            <img src="{%static 'image/petconnect.svg'%}" alt="Logo PetConnect" class="logo">
+        </div>
+            <div class="footer-social">
+            <a href="#" class="social-icon"><img src="{%static 'image/facebook.svg'%}" alt="Facebook"></a>
+            <a href="#" class="social-icon"><img src="{%static 'image/instagram.svg'%}" alt="Instagram"></a>
+            <a href="#" class="social-icon"><img src="{%static 'image/youtube.svg'%}" alt="YouTube"></a>
+            <a href="#" class="social-icon"><img src="{%static 'image/whatsapp.svg'%}" alt="WhatsApp"></a>
+            </div>
+        </div>
+        <p class="footer-copyright">
+            Copyright © 2024 - Todos os Direitos Reservados
+        </p>
+    </footer>
+<!--Fim Footer-->
+
+
+<script>
+    // Carrosel
+
+    let currentIndex = 0;
+const items = document.querySelectorAll('.carousel-item');
+const totalItems = items.length;
+
+// Passa para o próximo slide
+function nextSlide() {
+  items[currentIndex].classList.remove('active');
+  currentIndex = (currentIndex + 1) % totalItems;
+  items[currentIndex].classList.add('active');
+  updateCarousel();
+}
+
+// Volta para o slide anterior
+function prevSlide() {
+  items[currentIndex].classList.remove('active');
+  currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+  items[currentIndex].classList.add('active');
+  updateCarousel();
+}
+
+// Atualiza o carrossel (mostra o slide atual)
+function updateCarousel() {
+  const offset = currentIndex * 100;
+  document.querySelector('.carousel-inner').style.transform = `translateX(${offset}%)`;
+  setTimeout(function(){document.querySelector('.carousel-inner').style.transform = 'translateX(0%)';},500)
+}
+nextSlide()
+// Passagem automática (a cada 3 segundos)
+//setInterval(nextSlide, 3000);
+
+// Fim Carrosel
+
+</script>
+</body>
+</html>
