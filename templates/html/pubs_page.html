@@ -1,0 +1,26 @@
+<section style="display: flex;flex-direction: row;width: 100%;align-items: anchor-center;justify-content: space-around;">
+    {%if titulo != False %}
+    <div style="display: flex;flex-direction: column;cursor:pointer;">
+        <img src='{{img0.url}}' alt="photo_pub" style="width:200px;">
+
+        <a style='width: 200px;height: 425px;display:flex;align-items: end;position: absolute;top:10px;'  href="{%url 'post_detail'  id=id_user name=titulo%}">Nome:{{titulo}}</a>
+        <a href="{%url 'post_detail'  id=id_user name=titulo%}" style="margin-top: 20px;">ONG Name:{{creator}}</a>
+    </div>
+    {%endif%}
+    {%if titulo0 != False %}
+    <div style="display: flex;flex-direction: column;cursor:pointer;">
+        <img src='{{img00.url}}' alt="photo_pub" style="width:200px;">
+
+        <a style='width: 200px;height: 425px;display:flex;align-items: end;position: absolute;top:10px;'  href="{%url 'post_detail'  id=id_user name=titulo0%}">Nome:{{titulo0}}</a>
+        <a href="{%url 'post_detail'  id=id_user name=titulo0%}" style="margin-top: 20px;">ONG Name:{{creator}}</a>
+    </div>
+    {%endif%}
+    {%if titulo1 != False%}
+    <div style="display: flex;flex-direction: column;cursor:pointer;">
+        <img src='{{img1.url}}' alt="photo_pub" style="width:200px;">
+
+        <a style='width: 200px;height: 425px;display:flex;align-items: end;position: absolute;top:10px;'  href="{%url 'post_detail'  id=id_user name=titulo1%}">Nome:{{titulo1}}</a>
+        <a href="{%url 'post_detail'  id=id_user name=titulo1%}" style="margin-top: 20px;">ONG Name:{{creator}}</a>
+    </div>
+    {%endif%}
+</section>

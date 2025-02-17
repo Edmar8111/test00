@@ -1,0 +1,183 @@
+{%extends 'html/home.html'%}
+
+{%block home%}
+<div id="users" style="display:none;">
+{%for users in info.user%}
+    <input value="{{users}}" type="text">
+{%endfor%}
+</div>
+<div id="pub_name" style="display:none;">
+{%for pub_name in info.pub_name%}
+    <input value="{{pub_name}}" type="text">
+{%endfor%}
+</div>
+<div id="pub_id" style="display: none;">
+    {%for id_pub in info.pub_id%}
+        <input type="number" value="{{id_pub}}">
+    {%endfor%}
+    </div>
+<div id="msg" style="display:none;">
+{%for msg in info.msg%}
+    <input value="{{msg}}" type="text">
+{%endfor%}
+    </div>
+{%for pub_in in info.pub_id %}
+<div id="model_requisicao" style="width: 100%;display:flex;flex-direction:column;text-align: -webkit-center;text-transform: capitalize;">
+    <div id="model_requisicao0"></div>
+    <input type="submit" id="bt_aprovado" value="Aprovar">
+    <input type="submit" id="bt_recusar" value="Recusar">
+</div>
+{%endfor%}
+<div id="log" style="display: flex;flex-direction: column;text-align-last: center;text-transform: capitalize;">
+    {%if tipo_user == False %}
+        <h1>SUAS REQUISIÇÕES</h1>
+    {%else%}
+        <h1>LOG</h1>
+    {%endif%}
+    {%for logs in log_info.pub_id%}
+        <div id="log_container">
+        </div>
+        <hr>
+    {%endfor%}
+    <script>
+        user = {{log_info.user|safe}};
+        pub = {{log_info.pub_name|safe}};
+        msg = {{log_info.msg|safe}};
+        resposta = {{log_info.resposta|safe}};
+        // function tag_create(tag, inner){
+        //     gerar = document.createElement(tag)
+        //     gerar.innerHTML=inner        
+        // }
+        for(a=0;a<document.querySelectorAll('#log_container').length;a++){
+
+            tag_0=document.createElement('p')
+            tag_0.innerHTML=`USUARIO:${user[a]}`
+            tag_1=document.createElement('p')
+            tag_1.innerHTML=`PUBLICAÇÃO:${pub[a]}`
+            tag_2=document.createElement('p')
+            tag_2.innerHTML=`MENSAGEM:${msg[a]}`
+            tag_3=document.createElement('p')
+            tag_3.innerHTML=`STATUS:${resposta[a]}`
+            document.querySelectorAll('#log_container')[a].appendChild(tag_0)
+            
+            document.querySelectorAll('#log_container')[a].appendChild(tag_1)
+            
+            document.querySelectorAll('#log_container')[a].appendChild(tag_2)
+            
+            document.querySelectorAll('#log_container')[a].appendChild(tag_3)
+        
+            }
+    </script>
+</div>
+<form action="{%url 'notify_request' hash=key_user%}" method="POST" enctype="multipart/form-data" style="display:none;">
+    {%csrf_token%}
+    <input type="text" id='request_answear' name="request_answear">
+    <input type="number" value=0 id='request_0' name="request0">
+    <button id="post_answear"></button>
+</form>
+<script>
+
+    setTimeout(function(){for(a=0;a<document.querySelectorAll('#model_requisicao button').length;a++){
+        if(document.querySelectorAll('#model_requisicao button')[a].value=='Recusar'){
+            console.log(document.querySelectorAll('#model_requisicao button')[a])}
+    }},500)
+    function create_tag(tag_name, inner_text, n){
+        tag = document.createElement(`${tag_name}`)
+        if(tag_name=='input'){
+            tag.value=inner_text;
+            tag.readOnly='true'
+            tag.style.textAlign='center'
+            tag.style.color='aliceblue'
+            if(inner_text=='Recusado'){
+                tag.style.background='red'
+            }else{tag.style.background='green'}
+        }else{tag.innerHTML=inner_text}
+        if(tag_name=='h6'){document.querySelector('#log').appendChild(tag)}
+            
+        else{document.querySelectorAll('#model_requisicao div')[n].appendChild(tag)}
+    }
+    research_num=0
+    requisicao=''
+    requisicao0=''
+    bt_aproveAll = document.querySelectorAll('#model_requisicao #bt_aprovado')
+    bt_recuseAll = document.querySelectorAll('#model_requisicao #bt_recusar')
+    div_container = []
+    bt_aproveAll.forEach((bt_aprove) =>{
+        bt_aprove.addEventListener('click', ()=>{
+            requisicao='Aprovado'
+            bt_aprove.value=true
+            for(a=0;a<document.querySelectorAll('#model_requisicao input').length;a++){
+                
+                if(document.querySelectorAll('#model_requisicao input')[a].value=='true'){
+                    document.querySelectorAll('#model_requisicao input')[a].style.display='none'
+                    document.querySelectorAll('#model_requisicao input')[a+1].style.display='none'
+                    requisicao0=` ${document.querySelectorAll('#model_requisicao')[research_num].childNodes[1].innerText} STATUS:${requisicao}`
+                    document.querySelector('form #request_answear').value=requisicao
+                    document.querySelector('form #request_0').value=document.querySelectorAll('#pub_id input')[research_num].value
+                    ;break}
+                if(a%2===0 && research_num<parseInt(document.querySelectorAll('#model_requisicao').length)-1){
+                    research_num++
+                    }   
+            }
+            setTimeout(function(){
+                
+                console.log(requisicao0)
+                create_tag('h6', requisicao0, research_num)
+                document.querySelectorAll('#pub_id input')[research_num].remove()
+                document.querySelectorAll('#model_requisicao')[research_num].remove()
+                research_num=0
+                document.querySelector('#post_answear').click()
+            },500)
+        })
+    })
+    
+    bt_recuseAll.forEach((bt_recuse)=>{
+        bt_recuse.addEventListener('click', ()=>{
+            requisicao='Recusado'
+            bt_recuse.value=true
+            for(a=0;a<document.querySelectorAll('#model_requisicao input').length;a++){
+                if(document.querySelectorAll('#model_requisicao input')[a].value=='true'){
+                    document.querySelectorAll('#model_requisicao input')[a].style.display='none'
+                    document.querySelectorAll('#model_requisicao input')[a-1].style.display='none'
+                    requisicao0=` ${document.querySelectorAll('#model_requisicao')[research_num].childNodes[1].innerText} STATUS:${requisicao}`
+                    document.querySelector('form #request_answear').value=requisicao
+                    document.querySelector('form #request_0').value=document.querySelectorAll('#pub_id input')[research_num].value 
+                    ;break}
+                if(a%2==1 && research_num<parseInt(document.querySelectorAll('#model_requisicao').length)){
+                    research_num++
+                }
+
+            }
+            setTimeout(function(){
+                
+                console.log(research_num)
+                
+                create_tag('h6', requisicao0, research_num)
+                document.querySelectorAll('#pub_id input')[research_num].remove()
+                document.querySelectorAll('#model_requisicao')[research_num].remove()
+                research_num=0
+                document.querySelector('#post_answear').click()
+            },500)
+        })
+    })
+    
+    setTimeout(function(){for(a=0;a<document.querySelectorAll('#users input').length; a++){
+        tag_contentMSG=document.querySelectorAll('#msg input')[a].value
+        tag_contentMSG=tag_contentMSG.replace(/\s+/g, ' ').trim()
+        create_tag('p',`O usuario:${document.querySelectorAll('#users input')[a].value}`,a)
+        create_tag('p',`Requisição:${document.querySelectorAll('#pub_name input')[a].value}`,a)
+        create_tag('p',`Mensagem:${tag_contentMSG}`,a)
+    };
+    },500)
+    
+    setTimeout(function(){
+        tag_id = document.createElement('input')
+        tag_id.value=int(document.querySelectorAll('#id_pub input')[a].value)
+        tag_id.style.display='none'
+        for(a=0;a<document.querySelectorAll('#model_requisicao').length;a++){
+            document.querySelectorAll('#model_requisicao')[a].appendChild(tag_id)
+        }
+    },500)
+</script>
+{%endblock%}
+

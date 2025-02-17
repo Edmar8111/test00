@@ -1,0 +1,135 @@
+{%extends 'html/home.html'%}
+{%block head%}
+  <title>Cadastro de Pets - PetConnect</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+{%endblock%}
+  <!-- Formulário -->
+{%block home%}
+  <main class="container mx-auto mt-10">
+    <section class="bg-purple-600 text-white rounded-xl shadow-lg p-6 max-w-md mx-auto">
+      <div class="text-center mb-6">
+        <h1 class="text-xl font-semibold mb-4">Cadastro de Pets</h1>
+      </div>
+      <form id="forma" action="{%url 'pub_create' inst_hash=key_inst %}" method="post" class="space-y-4" enctype="multipart/form-data">
+        <!-- Campos do formulário -->
+        {%csrf_token%}
+        <div>
+          <label for="nome" class="block text-sm font-medium">Nome</label>
+          <input type="text" id="nome" name="titulo" class="w-full mt-1 p-2 rounded bg-white text-gray-800" placeholder="Informe o nome do animal" required>
+        </div>
+        <div>
+
+        <div>
+          <label for="idade" class="block text-sm font-medium">Idade</label>
+          <input type="number" id="idade" name="idade" class="w-full mt-1 p-2 rounded bg-white text-gray-800" placeholder="Informe a idade do animal" required>
+        </div>
+
+        <div>
+          <label for="sexo" class="block text-sm font-medium">Sexo</label>
+          <select id="sexo" name="sexo" class="w-full mt-1 p-2 rounded bg-white text-gray-800">
+            <option value="0">Macho</option>
+            <option value="1">Femea</option>
+            
+          </select>
+        </div>
+
+        <div>
+          <label for="tipo" class="block text-sm font-medium">Tipo</label>
+          <select id="tipo" name="tipo_n" class="w-full mt-1 p-2 rounded bg-white text-gray-800">
+            <option value="cachorro">Cachorro</option>
+            <option value="gato">Gato</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div>
+          <label for="raca" class="block text-sm font-medium">Raça</label>
+          <input type="text" id="raca" name="raca" class="w-full mt-1 p-2 rounded bg-white text-gray-800" placeholder="Informe a raça do animal" required>
+        </div>
+        <div>
+          <label for="descricao" class="block text-sm font-medium">Descrição</label>
+          <textarea id="descricao" name="descricao" class="w-full mt-1 p-2 rounded bg-white text-gray-800" placeholder="Adicione uma descrição sobre o pet" rows="4" ></textarea>
+        </div>
+
+        <!-- Fotos (movido para o final) -->
+        <div id="photo_saver">
+          <label for="uploadFoto" class="block text-sm font-medium mb-2">Fotos do Pet</label>
+          <input 
+            type="file" 
+            id="uploadFoto" 
+            accept="image/*" 
+            class="hidden" 
+            multiple 
+            onchange="addPhotoPreview(event)"
+          >
+          <label 
+            for="uploadFoto" 
+            class="block w-full cursor-pointer bg-white text-purple-600 px-4 py-2 rounded-lg text-center hover:bg-purple-500 hover:text-white transition"
+          >
+            Adicionar Fotos
+          </label>
+          <div id="photoPreviewContainer" class="grid grid-cols-3 gap-4 mt-4">
+            <!-- Pré-visualizações serão adicionadas dinamicamente aqui -->
+          </div>
+        </div>
+
+        <!-- Botão de envio -->
+        <button type="submit" class="w-full bg-white text-purple-600 font-medium p-2 rounded hover:bg-purple-500 hover:text-white transition">Enviar</button>
+      </form>
+    </section>
+    <script>
+      function addPhotoPreview(event) {
+        const files0 = event.target.files;
+        valor = event.target.files
+        input_file = document.createElement('input')
+        input_file.style.display='none'
+        input_file.type='file'
+        dataTransfer=new DataTransfer()
+        dataTransfer.items.add(event.target.files[0])
+        input_file.files=dataTransfer.files
+        input_file.name=`file${parseInt(document.querySelectorAll('#photoPreviewContainer div').length)}`
+        input_file.id=`file${parseInt(document.querySelectorAll('#photoPreviewContainer div').length)}`
+        document.querySelector('#forma').appendChild(input_file)
+        console.log(input_file)
+        const container = document.getElementById('photoPreviewContainer');
+        // Limita o número de fotos a 5
+        if (container.children.length + files0.length > 5) {
+          alert("Você pode adicionar no máximo 5 fotos.");
+          return;
+        }
+  
+        Array.from(files0).forEach((file, index) => {
+          if (!file.type.startsWith('image/')) return;
+  
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const div = document.createElement('div');
+            div.className = 'relative w-full h-24 bg-gray-300 rounded-lg overflow-hidden';
+            div.id='name_div_file'
+  
+            div.innerHTML = `
+              <img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover">
+              <button 
+                class="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full text-xs" 
+                onclick="removePhotoPreview(event, ${index})"
+              >
+                &times;
+              </button>
+            `;
+            container.appendChild(div);
+          };
+          reader.readAsDataURL(file);
+        });
+      
+      }
+      
+      function removePhotoPreview(event) {
+        const button = event.target;
+        const photoDiv = button.closest('div');
+        photoDiv.remove();
+        //if(document.querySelector('#photoPreviewContainer div').length){}
+      }
+    
+    </script>
+  
+  </main>
+{%endblock%}
