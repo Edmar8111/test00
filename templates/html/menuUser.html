@@ -1,0 +1,59 @@
+{%extends 'html/home.html'%}
+
+{%block home%}
+<h1>Hello {{username}}</h1>
+
+<form method="GET">
+    {%csrf_token%}
+    <button name='click_logout' id="click_logout" value="0" action="{%url 'perfil_user' key_inst=key_user%}">Logout</button>
+    <script>
+        document.querySelector('#click_logout').addEventListener('click', function(){document.querySelector('#click_logout').value=1})
+    </script>
+    <button name="click_edit" action="{%url 'complemento_info'%}">Editar Perfil</button>
+</form>
+{%if ong_true %}<a href="{%url 'pub_create' inst_hash=key_user%}">Create Pub</a>
+<a href="{%url 'pubIndex' inst_hash=key_user%}">My Pubs</a>
+{%else%}
+<a href="{%url 'request_fav'%}">FAVORITADOS</a>
+{%endif%}
+<form action="{%url 'delete_post' id=user_id hash=key_user %}" method="POST" enctype="multipart/form-data">
+    {%csrf_token%}
+    <button style="display: none;" id="del_c"></button>
+    <input type="number" name="integrar" value=1 style="display: none;">
+</form>
+<div id="span_back" style="display:none;position: absolute;width: 100%;height: 100%;background-color: dimgray;opacity: 50%;"></div>
+<span id="bt_confirma" style="display: none;border: 1px solid black;width: 250px;height: 150px;top:150px;position: absolute;justify-self: anchor-center;justify-content:space-around;align-items:end;z-index: 1;background-color: aliceblue;">
+    <p style="position: absolute;width: 215px;top: 5px;">Deseja Excluir a Conta {{username}} Permanentemente(obs: Todos os dados vinculados serão apagados)</p>
+    <button style="background-color: red;color: aliceblue;margin-bottom: 5px;" id="confirm_del">Excluir</button>
+    <button style="background-color: dimgray;color: aliceblue;margin-bottom: 5px;" id="bt_cancel">Cancel</button>
+</span>
+
+<button id="botao_init">Excluir Conta</button>
+<script>
+    active=0
+    
+    function close_span(){
+        document.querySelector('#bt_confirma').style.display='none'
+        document.querySelector('#span_back').style.display='none'}
+    document.querySelector('#botao_init').addEventListener('click', function(){
+        document.querySelector('#bt_confirma').style.display='flex'
+        document.querySelector('#span_back').style.display='block'
+        setTimeout(function(){if(active==0){active++}},100)
+    })
+    document.addEventListener('click', function(e){
+        click_in=document.querySelector('#bt_confirma').contains(e.target)
+        if(!click_in && active>0){
+            close_span()}
+            setTimeout(function(){if(active>0 && document.querySelector('#bt_confirma').style.display=='none'){active=0}},100)
+    })
+    document.querySelector('#confirm_del').addEventListener('click',function(){
+        setTimeout(function(){document.querySelector('#del_c').click()},500)
+    })
+    
+    document.querySelector('#bt_cancel').addEventListener('click', function(){
+        document.querySelector('#bt_confirma').style.display='none'
+        document.querySelector('#span_back').style.display='none'
+    })
+    console.log(document.querySelector('#botao_init').contains(e.target))
+</script>
+{%endblock%}

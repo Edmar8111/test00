@@ -1,0 +1,45 @@
+{%load static%}
+
+<form method='post' action="{%url 'edit_post' hash=inst_hash id=id%}" enctype="multipart/form-data">
+    {%csrf_token%}
+    <input type='text' value='{{pub_inf0.titulo}}' name="titulo_new">
+    <select name="" id="">
+        <option value="1">Sim</option>
+        <option value="0">Não</option>
+    </select>
+    <button>Editar</button>
+    <div id="img_files">
+    {%for url_img in pub_file%}
+        <img src="{{url_img.url}}"  alt="" style="width: 200px;" id="file_change" name="file_change" value={{url_img}}>
+        <input type="text" id="file_old" value={{url_img}} style="display:none;">
+        <input type="file" id="file_new">
+    {%endfor%}
+    </div>
+    <script>
+        document.querySelectorAll('#img_files input')[1].addEventListener('change', function(){
+            document.querySelectorAll('#img_files input')[0].name='file01'
+            document.querySelectorAll('#img_files input')[1].name='file0'
+            document.querySelectorAll('#img_files img')[0].src=`${'{%static "image/logo_img.svg"%}'}`
+        })
+        document.querySelectorAll('#img_files input')[3].addEventListener('change', function(){
+            document.querySelectorAll('#img_files input')[2].name='file02'
+            document.querySelectorAll('#img_files input')[3].name='file1'
+            document.querySelectorAll('#img_files img')[1].src=`${'{%static "image/logo_img.svg"%}'}`
+        })
+        document.querySelectorAll('#img_files input')[5].addEventListener('change', function(){
+            document.querySelectorAll('#img_files input')[4].name='file03'
+            document.querySelectorAll('#img_files input')[5].name='file2'
+            document.querySelectorAll('#img_files img')[2].src=`${'{%static "image/logo_img.svg"%}'}`
+        })
+        document.querySelectorAll('#img_files input')[7].addEventListener('change', function(){
+            document.querySelectorAll('#img_files input')[6].name='file04'
+            document.querySelectorAll('#img_files input')[7].name='file3'
+            document.querySelectorAll('#img_files img')[3].src=`${'{%static "image/logo_img.svg"%}'}`
+        })
+        document.querySelectorAll('#img_files input')[9].addEventListener('change', function(){
+            document.querySelectorAll('#img_files input')[8].name='file05'
+            document.querySelectorAll('#img_files input')[9].name='file4'
+            document.querySelectorAll('#img_files img')[4].src=`${'{%static "image/logo_img.svg"%}'}`
+        })
+    </script>
+</form>

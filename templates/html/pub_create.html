@@ -1,0 +1,47 @@
+{%load static%}
+<form method='POST' action="{%url 'pub_create' inst_hash=key_inst%}" enctype="multipart/form-data">
+    {%csrf_token%}
+    <label for="titulo">Nome Pub</label>
+    <input type="text" placeholder="Máximo 10 Linhas" name="titulo" required>
+    </label>
+    <input type="file" name="imgfile0" id="imgfile0" style="width: 250px;height: 200px;border:1px solid;cursor: pointer;opacity: 0%;" required>
+    <div id="imgfilediv0" style="border-radius:5px;border:1px solid; width:250px;height: 200px;position: absolute;left: 260px;top: 7px;display:flex;align-items:center;justify-content:center;z-index: -1;">
+        Select Image <img src="{%static 'image/logo_img.svg'%}" alt="logo_img" style="width: 25px;"></div>
+    <input type="file" name="imgfile1" id="imgfile1" style="width: 250px;height: 200px;border:1px solid;cursor: pointer;opacity: 0%;">
+    <div id="imgfilediv1" style="border-radius:5px;border:1px solid; width:250px;height: 200px;position: absolute;left: 514px;top: 7px;display:flex;align-items:center;justify-content:center;z-index: -1;">
+        Select Image <img src="{%static 'image/logo_img.svg'%}" alt="logo_img" style="width: 25px;"></div>
+    <input type="file" name="imgfile2" id='imgfile2' style="display: none; width: 250px;height: 200px;border:1px solid;cursor: pointer;opacity: 0%;">
+    <div id="imgfilediv2" style="display: none;border-radius:5px;border:1px solid; width:250px;height: 200px;position: absolute;left: 7px;top: 207px;align-items:center;justify-content:center;z-index: -1;">
+        Select Image <img src="{%static 'image/logo_img.svg'%}" alt="logo_img" style="width: 25px;"></div>
+    <input type="file" name="imgfile3" id='imgfile3' style="display: none; width: 250px;height: 200px;border:1px solid;cursor: pointer;opacity: 0%;">
+    <div id="imgfilediv3" style="display: none;border-radius:5px;border:1px solid; width:250px;height: 200px;position: absolute;left: 7px;top: 407px;align-items:center;justify-content:center;z-index: -1;">
+        Select Image <img src="{%static 'image/logo_img.svg'%}" alt="logo_img" style="width: 25px;"></div>
+    <input type="file" name="imgfile4" id='imgfile4' style="display: none; width: 250px;height: 200px;border:1px solid;cursor: pointer;opacity: 0%;">
+    <div id="imgfilediv4" style="display: none;border-radius:5px;border:1px solid; width:250px;height: 200px;position: absolute;left: 7px;top: 607px;align-items:center;justify-content:center;z-index: -1;">
+        Select Image <img src="{%static 'image/logo_img.svg'%}" alt="logo_img" style="width: 25px;"></div>
+    <label for="castrado">Castrado</label>
+    <select id="type" name="castrado" required>
+        <option value="1">Sim</option>
+        <option value="0">Não</option>
+      </select>
+    <select id="type" name="tipo_n" required>
+        <option value="Cão">Cão</option>
+        <option value="Gato">Gato</option>
+        <option value="Outro">Outro</option>
+    </select>
+
+    <button>Post</button>
+</form>
+<script>
+    setInterval(function(){
+        if(document.querySelector('#imgfile1').value!=''){document.querySelector('#imgfile2').style.display='block'
+            document.querySelector('#imgfilediv2').style.display='flex'
+        }
+        if(document.querySelector('#imgfile2').value!=''){document.querySelector('#imgfile3').style.display='block'
+            document.querySelector('#imgfilediv3').style.display='flex'
+        }
+        if(document.querySelector('#imgfile3').value!=''){document.querySelector('#imgfile4').style.display='block'
+            document.querySelector('#imgfilediv4').style.display='flex'
+        }
+        },500)
+</script>
