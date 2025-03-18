@@ -1,0 +1,161 @@
+{%extends 'html/home.html'%}
+
+{%block home%}
+<main style="width: 100%;text-align: -webkit-center;">
+<label for="filtro_alfabetico">Filtrar</label>
+<select name="filtro_tipo0" id="filtro_tipo0">
+    <option value=1>Recentes</option>
+    <option value=0>A-z</option>
+</select>
+<select name="filtro_tipo" id="filtro_tipo" >
+    <option value="cao">Cão</option>
+    <option value="gato">Gato</option>
+    <option value="outro">Outro</option>
+</select><button id="resetar_filtros">Reset Filtro</button>
+
+{%if pub_index0%}
+<div class="div" id="container" style="display: flex;flex-direction: column-reverse;align-items: center;">
+    {%for pub_inf in pub_index0%}    
+        <a id="{{pub_inf.titulo}}" class='{{pub_inf.tipo_n}}' href='{%url "post_detail" name=pub_inf.titulo hash=key_user id=pub_inf.id %}' class="div" id='container_{{pub_inf.id}}' style="display: flex;flex-direction: column; cursor: pointer;text-decoration: none;">
+            <img style='width: 200px;' src='{{pub_inf.imgpub.url}}'>
+            <input type="text" value="{{pub_inf.titulo}}" readonly="true" style="border: none;outline: none;text-align: center;">
+        </a>
+    {%endfor%}
+</div>
+{%endif%}
+<script>
+    //file_back={{pub_index.titulo|safe}} ;
+    list_containers=[]
+    list_titulo=[]
+    data_tipo=''
+    container_div=document.querySelector('#container')
+    //armazena os container de info
+    for(a=0;a<document.querySelectorAll('#container a').length;a++){
+        list_containers.push(document.querySelectorAll('#container a')[a])
+    }
+    function charset_name(){for(a=0;a<list_containers.length;a++){list_titulo.push(String(list_containers[a].id))}};
+    setTimeout(function(){charset_name()},1000)
+    function remove_containers(){
+        while(document.querySelectorAll('#container a').length>0){
+        for(a=0;a<document.querySelectorAll('#container a').length;a++){
+            document.querySelectorAll('#container a')[0].remove()
+    }}
+    }
+    function add_containers(){
+        for(a=0;a<list_containers.length;a++){
+            list_containers[a].id = list_containers[a].id.replace(/\s+/g, '')
+            container_div.appendChild(list_containers[a])
+        }
+    }
+    function exec_inicial(){
+        remove_containers();
+        add_containers()
+        document.querySelector('#filtro_tipo').value=''
+    }
+    
+    exec_inicial()
+    document.querySelector('#filtro_tipo0').addEventListener('change', function(){
+        ordenar=list_titulo.sort()
+        remove_containers()
+        len_div = 0
+        if(document.querySelector('#filtro_tipo0').value==1){
+            container_div.style.flexDirection='column-reverse'
+            add_containers();
+            setTimeout(function(){
+                if(data_tipo=='cao'){
+                    remove_tag=[]
+                    for(a=0;a<document.querySelectorAll('#container a').length;a++){
+                    if(String(document.querySelectorAll('#container a')[a].className)!='cachorro'){
+                        remove_tag.push(document.querySelectorAll('#container a')[a].id)
+                    }};
+                    for(a=0;a<=remove_tag.length;a++){document.querySelector(`#${remove_tag[a]}`).remove()}};
+                if(data_tipo=='gato'){
+                    remove_tag=[]
+                    for(a=0;a<document.querySelectorAll('#container a').length;a++){
+                    if(document.querySelectorAll('#container a').length>0 && String(document.querySelectorAll('#container a')[a].className)!='gato'){
+                        remove_tag.push(document.querySelectorAll('#container a')[a].id)
+                    }}
+                    for(a=0;a<=remove_tag.length;a++){document.querySelector(`#${remove_tag[a]}`).remove()}};
+                if(data_tipo=='outro'){
+                    remove_tag=[]
+                    for(a=0;a<document.querySelectorAll('#container a').length;a++){
+                    if(document.querySelectorAll('#container a').length>0 && String(document.querySelectorAll('#container a')[a].className)!='outro'){
+                        remove_tag.push(document.querySelectorAll('#container a')[a].id)
+                    }}
+                    for(a=0;a<=remove_tag.length;a++){document.querySelector(`#${remove_tag[a]}`).remove()}};
+
+            },500);
+            
+        }
+        setTimeout(function(){if(document.querySelector('#filtro_tipo0').value==0){
+            remove_containers()
+            setTimeout(function(){
+            for(a=0;a<list_containers.length;a++){
+                if(String(list_containers[len_div].id)==ordenar[a]){container_div.appendChild(list_containers[len_div]);len_div=0}else{len_div++;a=a-1}
+            };
+            container_div.style.flexDirection='column'},750)
+            
+        }},750);
+
+        setTimeout(function(){
+            if(data_tipo=='cao'){
+                remove_tag=[]
+                for(a=0;a<document.querySelectorAll('#container a').length;a++){
+                if(String(document.querySelectorAll('#container a')[a].className)!='cachorro'){
+                    remove_tag.push(document.querySelectorAll('#container a')[a].id)
+                }};
+                for(a=0;a<=remove_tag.length;a++){document.querySelector(`#${remove_tag[a]}`).remove()}};
+            if(data_tipo=='gato'){
+                remove_tag=[]
+                for(a=0;a<document.querySelectorAll('#container a').length;a++){
+                if(document.querySelectorAll('#container a').length>0 && String(document.querySelectorAll('#container a')[a].className)!='gato'){
+                    remove_tag.push(document.querySelectorAll('#container a')[a].id)
+                }}
+                for(a=0;a<=remove_tag.length;a++){document.querySelector(`#${remove_tag[a]}`).remove()}};
+            if(data_tipo=='outro'){
+                remove_tag=[]
+                for(a=0;a<document.querySelectorAll('#container a').length;a++){
+                if(document.querySelectorAll('#container a').length>0 && String(document.querySelectorAll('#container a')[a].className)!='outro'){
+                    remove_tag.push(document.querySelectorAll('#container a')[a].id)
+                }}
+                for(a=0;a<=remove_tag.length;a++){document.querySelector(`#${remove_tag[a]}`).remove()}};
+            },1750);
+        })
+
+    document.querySelector('#filtro_tipo').addEventListener('change', function(){
+        remove_tag=[]
+        if(document.querySelector('#filtro_tipo').value=='cao'){
+            data_tipo=document.querySelector('#filtro_tipo').value
+            document.querySelector('#filtro_tipo0').value=''
+            add_containers()
+            //remove os containers de tipo diferente
+            for(a=0;a<document.querySelectorAll('#container a').length;a++){
+                if(document.querySelectorAll('#container a').length>0 && String(document.querySelectorAll('#container a')[a].className)!='cachorro'){
+                    document.querySelectorAll('#container a')[a].remove()
+        }}};
+        if(document.querySelector('#filtro_tipo').value=='gato'){
+            data_tipo=document.querySelector('#filtro_tipo').value
+            document.querySelector('#filtro_tipo0').value=''
+            add_containers()
+            //remove os containers de tipo diferente
+            for(a=0;a<document.querySelectorAll('#container a').length;a++){
+                if(document.querySelectorAll('#container a').length>0 && String(document.querySelectorAll('#container a')[a].className)=='cachorro' || String(document.querySelectorAll('#container a')[a].className)=='cachorro'){
+                    remove_tag.push(document.querySelectorAll('#container a')[a].id)
+            }}
+            for(a=0;a<=remove_tag.length;a++){document.querySelector(`#${remove_tag[a]}`).remove()}
+        }
+        if(document.querySelector('#filtro_tipo').value=='outro'){
+            data_tipo=document.querySelector('#filtro_tipo').value
+            document.querySelector('#filtro_tipo0').value=''
+            for(a=0;a<document.querySelectorAll('#container a').length;a++){
+            if(document.querySelectorAll('#container a').length>0 && String(document.querySelectorAll('#container a')[a].className)!='outro'){
+                remove_tag.push(document.querySelectorAll('#container a')[a].id)
+            }}
+            for(a=0;a<=remove_tag.length;a++){document.querySelector(`#${remove_tag[a]}`).remove()};
+        }
+    })
+
+    document.querySelector('#resetar_filtros').addEventListener('click',function(){window.location.reload()})
+</script>
+</main>
+{%endblock%}
