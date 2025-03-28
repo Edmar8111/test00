@@ -1,0 +1,46 @@
+{%extends 'html/home.html'%}
+
+{%block home%}
+<section style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px;">
+    {%if titulo != False %}
+    <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 220px; transition: transform 0.3s ease-in-out;">
+        <img src='{{img0.url}}' alt="photo_pub" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); transition: box-shadow 0.3s ease;">
+        <a href="{%url 'post_detail' id=id_user name=titulo%}" style="margin-top: 15px; text-align: center; font-weight: bold; color: #333; text-decoration: none;">Nome: {{titulo}}</a>
+        <a href="{%url 'post_detail' id=id_user name=titulo%}" style="margin-top: 10px; text-align: center; color: #777;">ONG Name: {{creator}}</a>
+    </div>
+    {%endif%}
+
+    {%if titulo0 != False %}
+    <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 220px; transition: transform 0.3s ease-in-out;">
+        <img src='{{img00.url}}' alt="photo_pub" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); transition: box-shadow 0.3s ease;">
+        <a href="{%url 'post_detail' id=id_user name=titulo0%}" style="margin-top: 15px; text-align: center; font-weight: bold; color: #333; text-decoration: none;">Nome: {{titulo0}}</a>
+        <a href="{%url 'post_detail' id=id_user name=titulo0%}" style="margin-top: 10px; text-align: center; color: #777;">ONG Name: {{creator}}</a>
+    </div>
+    {%endif%}
+
+    {%if titulo1 != False %}
+    <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 220px; transition: transform 0.3s ease-in-out;">
+        <img src='{{img1.url}}' alt="photo_pub" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); transition: box-shadow 0.3s ease;">
+        <a href="{%url 'post_detail' id=id_user name=titulo1%}" style="margin-top: 15px; text-align: center; font-weight: bold; color: #333; text-decoration: none;">Nome: {{titulo1}}</a>
+        <a href="{%url 'post_detail' id=id_user name=titulo1%}" style="margin-top: 10px; text-align: center; color: #777;">ONG Name: {{creator}}</a>
+    </div>
+    {%endif%}
+</section>
+
+{%for PubInfo in pubsInfo%}
+{%endfor%}
+<style>
+    /* Adicionando efeitos de hover e sombra */
+    .container div:hover {
+        transform: scale(1.05);
+    }
+
+    .container div img:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .container div a:hover {
+        color: #0056b3;
+    }
+</style>
+{%endblock%}
