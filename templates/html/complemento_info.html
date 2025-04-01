@@ -1,0 +1,146 @@
+{%extends 'html/home.html'%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetConnect</title>
+    {%block home%}
+    <!-- Bootstrap 5 -->
+  <link 
+  href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" 
+  rel="stylesheet"
+>
+
+<!-- Ícones do Bootstrap -->
+<link 
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+  rel="stylesheet"
+>
+
+<!-- Estilos Personalizados -->
+<style>
+  body {
+    background-color: #f3f5f7;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .profile-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  .card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+
+  /* Foto e Nome no Topo */
+  .profile-header {
+    background: linear-gradient(135deg, #6a1b9a, #9c27b0);
+    color: #fff;
+    padding: 30px;
+    text-align: center;
+  }
+
+  .profile-header img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    margin-bottom: 10px;
+  }
+
+  .form-container {
+    background-color: #fff;
+    padding: 40px;
+  }
+
+  .form-control {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+  }
+
+  .btn-save {
+    background-color: #6a1b9a;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-save:hover {
+    background-color: #9c27b0;
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+<div class="container profile-container">
+  <!-- Card Principal -->
+  <div class="card w-50">
+    <!-- Cabeçalho: Foto e Nome -->
+    <div class="profile-header">
+      <img src="https://via.placeholder.com/120" alt="Foto de Perfil">
+      <h5 class="mt-2">Nome</h5>
+      <p class="mb-0">Nome</p>
+    </div>
+
+    <!-- Formulário -->
+    <div class="form-container">
+      <form id="profileForm" action="{%url 'complemento_info' %}" method="post"> {%csrf_token%}
+        <div class="row">
+          <div class="col-md-6">
+            <input type="text" name="nome" class="form-control" placeholder="Nome" value="{{nome}}">
+          </div>
+          <div class="col-md-6">
+            <input type="email" name="email" class="form-control" placeholder="Email" value="{{email}}">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="CPF" id="cpf" maxlength="14" name="cpf" {%if nome%}value="{{cpf}}"{%endif%}>
+          </div>
+          <div class="col-md-6">
+            <input type="date" class="form-control" name="date" {%if nome%}value="{{date}}"{%endif%}>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="CEP" id="cep" maxlength="9" name="cep"  {%if nome%}value="{{cep}}"{%endif%} >
+          </div>
+          <div class="col-md-6">
+            <input type="text" name='cidade' class="form-control" placeholder="Cidade" value="{{cidade}}">
+          </div>
+        </div>
+
+        <input type="text" class="form-control" placeholder="Estado" name="estado" {%if nome%}value="{{estado}}"{%endif%} >
+        <input type="text" class="form-control" placeholder="Endereço" name="endereco" {%if nome%}value="{{endereco}}"{%endif%}>
+        <div class="row">
+          <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="Rua" name="rua" {%if nome%}value="{{rua}}"{%endif%}>
+          </div>
+          <div class="col-md-6">
+            <input type="number" class="form-control" placeholder="Número" name="numero" {%if nome%}value="{{numero}}"{%endif%}>
+          </div>
+        </div>
+        <input type="text" class="form-control" placeholder="Complemento" name="complemento" {%if nome%}value="{{complemento}}"{%endif%}>
+
+        <button type="submit" class="btn btn-save w-100 mt-3">
+          <i class="fas fa-save me-2"></i> Salvar
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{%endblock%}
+</body>
+</html>

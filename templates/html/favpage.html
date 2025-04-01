@@ -1,0 +1,51 @@
+{%block home%}
+<h1>Request fav</h1>
+
+<div id="img_file" style="display:none;">
+{%for test_img in fav_img0%}
+    <input type="text" value="{{test_img.url}}" >
+{%endfor%}
+</div>
+<div id="pub_id" style="display:none;">
+    {%for pub_id in id_pub%}
+        <input type="text" value="{{pub_id}}" >
+    {%endfor%}
+</div>
+<div id="titulo" style="display:none;">
+    {%for titulo in info_pub%}
+        <input type="text" value="{{titulo}}">    
+    {%endfor%}
+</div>
+<div id="pub_id" style="display:none;">
+    {%for pub_id in id_pub%}
+        <input type="text" value="{{pub_id}}">    
+    {%endfor%}
+</div>
+<input type="text" id="hash_user" style="display:none;" value="{{key_user}}">    
+
+{%for div_container in id_pub%}
+    <div id="pub_container" style="width:200px;border:1px solid black;display:flex;flex-direction:column;align-items: center;box-shadow: 1px 1px 1px dimgray;border-radius:5px;">
+        <a href="{%url 'post_detail' id=div_container.id hash=key_user name=div_container.titulo %}" style="position: absolute;width: 200px;height: 250px;z-index: 1;opacity: 0%;"></a>
+    </div>
+{%endfor%}
+{%if fav_on == False%}
+    <h1>Não há Fav</h1>
+{%endif%}
+<script>
+    function create_tag(tag_name, valor_id, tag_n){
+        tag = document.createElement(`${tag_name}`)
+        if(tag_name=='img'){
+            tag.style.width='200px'
+        }
+        tag.id=`${valor_id}`
+        document.querySelectorAll('#pub_container')[tag_n].appendChild(tag)
+    }
+    setTimeout(function(){for(a=0;a<document.querySelectorAll('#img_file input').length;a++){
+        //document.querySelectorAll('#pub_container a')[a].href=`post?${document.querySelectorAll('#titulo input')[a].value}/${document.querySelector('#hash_user').value}=${document.querySelectorAll('#pub_id input')[a].value}`
+        create_tag('img', 'img_'+a, a)
+        document.querySelector(`#pub_container #img_${a}`).src=document.querySelectorAll('#img_file input')[a].value
+        create_tag('p', 'titulo_'+a, a)
+        document.querySelector(`#pub_container #titulo_${a}`).innerHTML=`${document.querySelectorAll('#titulo input')[a].value}`
+    }},500)
+</script>
+{%endblock%}
