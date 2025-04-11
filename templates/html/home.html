@@ -1,0 +1,453 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        /* Estilo da barra de navegação */
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f5f5f5;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        /* Estilo da logo e nome da marca */
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 100px;
+            margin-right: 10px;
+        }
+
+        .brand-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Links de navegação */
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-size: 1, 5em;
+            color: #6a0dad;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #4b0082;
+        }
+
+        /* Login/Cadastro */
+        .auth-links {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .auth-links a {
+            text-decoration: none;
+            font-size: 1em;
+            color: #000;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .auth-links a:hover {
+            color: #7b00ce;
+        }
+
+        /*Carrosel*/
+
+        section.slider {
+            margin: 0 auto;
+            width: 100%;
+            height: auto;
+            padding: 0 !important;
+            overflow: hidden;
+        }
+
+        .slider-content {
+            width: 400%;
+            height: auto;
+            display: flex;
+        }
+
+        .slider-content input,
+        .img-mobile {
+            display: none;
+        }
+
+        .slide-box {
+            width: 25%;
+            height: auto;
+            position: relative;
+            text-align: center;
+            transition: 1s;
+        }
+
+        .slide-box img {
+            width: 100%;
+        }
+
+        .nav-manual,
+        .nav-auto {
+            position: absolute;
+            width: 100%;
+            margin-top: 35%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-manual .manual-btn,
+        .nav-auto div {
+            border: 1px solid #ff0054;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-manual .manual-btn:not(:last-child),
+        .nav-auto div:not(:last-child) {
+            margin-right: 10px;
+        }
+
+        .nav-manual .manual-btn:hover {
+            background-color: #ff0054;
+        }
+
+        #radio1:checked~.nav-auto .auto-btn1,
+        #radio2:checked~.nav-auto .auto-btn2,
+        #radio3:checked~.nav-auto .auto-btn3 {
+            background-color: #ff0054;
+        }
+
+        #radio1:checked~.primeiro {
+            margin-left: 0%;
+        }
+
+        #radio2:checked~.primeiro {
+            margin-left: -25%;
+        }
+
+        #radio3:checked~.primeiro {
+            margin-left: -50%;
+        }
+
+        @media screen and (max-width: 900px) {
+            .img-desktop {
+                display: none;
+            }
+
+            .img-mobile {
+                display: block;
+            }
+
+            .nav-auto,
+            .nav-manual {
+                margin-top: 60%;
+            }
+        }
+
+        /*Fim Carrosel*/
+
+        /* footer */
+
+        /* Estilo geral */
+
+        .footer {
+            background-color: #6a2e92;
+            /* Roxo */
+            color: white;
+            padding: 20px 10px;
+            font-family: Arial, sans-serif;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            position: relative;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex: 1;
+        }
+
+        .footer-logo img.logo {
+            width: 321px;
+            height: 214px;
+
+            margin-right: 10px;
+        }
+
+        .footer-logo p {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            flex: 1.2;
+            align-items: center;
+
+        }
+
+        .footer-social a {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+
+        }
+
+        .footer-social a img {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Texto do copyright */
+        .footer-copyright {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 14px;
+        }
+
+        /*fim footer */
+
+        .card1 {
+        width: 220px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: black;
+        background: white;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card1:hover {
+        transform: scale(1.05);
+        box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .card1 img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .card-content1 {
+        padding: 10px;
+        text-align: left;
+    }
+
+    .card-content p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+        main {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+    </style>
+    {%block head%}
+    {%endblock%}
+</head>
+
+<body>
+    {%if messages %}
+        <div style="display:flex;width: 100%;justify-content: center;">
+            <span id="Popup" style="width: 200px;position: absolute;height: 115px;z-index: 1;display: flex;align-items: center;justify-content: center;
+                border: 1px solid black;border-radius: 5px;background-color: bisque;top: -120px;color: green;text-align: center;">
+                {%for message in messages%}
+                    <p>{{message}}</p>
+                {%endfor%}
+            </span>
+        </div>
+        <script>
+            document.querySelector('#Popup').animate([{top:'-120px'},{top:'0px'}],{duration:1000});
+            setTimeout(function(){
+                document.querySelector('#Popup').style.top='0px',
+                setTimeout(function(){document.querySelector('#Popup').animate([{top:'0px'},{top:'-120px'}],{duration:1000})},1000),
+                setTimeout(function(){document.querySelector('#Popup').style.top='-120px'},1001);
+            },1001)
+        </script>
+    {%endif%}
+    
+    <!--NavBar-->
+    <header class="navbar">
+        <div class="logo-container">
+            <img src="{%static 'image/petconnect.svg'%}" alt="PetConnect Logo" class="logo">
+
+        </div>
+        <nav class="nav-links">
+            <a href="{%url 'home'%}">Home</a>
+            <a href="{%url 'nav_barHome'%}">Encontrar Pets</a>
+            <a href="#contact">Contato</a>
+            <a href="#about">Quem somos?</a>
+        </nav>
+        <div class="auth-links" style="display:{{login_display}};">
+            <i class="bi bi-person-circle fs-4"></i>
+            <a href="{%url 'login'%}" class="ms-2">Login/ Cadastro</a>
+        </div>
+        {%if logout_display%}
+        <form style="display:none;" action="{%url 'notify_request' hash=key_user%}" method="GET">
+            <button id="requisitar_notify"></button>
+        </form>
+        {%if notification == True %}
+        <img id='notification_icon' src="https://www.svgrepo.com/show/474256/notification-bell-new.svg"
+            alt="notification-icon" style="width: 20px;position: absolute;right: 110px;cursor:pointer;">
+        {%else%}
+        <img id='notification_icon' src="https://www.svgrepo.com/show/474254/notification-bell.svg"
+            alt="notification-icon" style="width: 20px;position: absolute;right: 110px;cursor:pointer;">
+        {%endif%}
+        <script>
+            document.querySelector('#notification_icon').addEventListener('click', function () {
+                document.querySelector('#requisitar_notify').click()
+            })
+        </script>
+        <div class="auth-links" style="display:block;">
+            <i class="bi bi-person-circle fs-4"></i>
+            <a href="{%url 'perfil_user' key_inst=key_user%}" value=0 name='menu' class="ms-2">{{user_name}}</a>
+        </div>
+        {%endif%}
+    </header>
+    <!--Fim NavBar-->
+    
+    {%block home%}
+
+    <!--Carossel-->
+    <section class="slider">
+        <div class="slider-content">
+
+            <input type="radio" name="btn-radio" id="radio1">
+            <input type="radio" name="btn-radio" id="radio2">
+            <input type="radio" name="btn-radio" id="radio3">
+
+            <div class="slide-box primeiro">
+                <img class="img-desktop" src="../../static/image/imagem 2.png" alt="slide 1">
+                <img class="img-mobile" src="../../static/image/imagem 2.png" alt="slide 1">
+            </div>
+
+            <div class="slide-box">
+                <img class="img-desktop" src="../../static/image/imagem 2.png" alt="slide 3">
+                <img class="img-mobile" src="../../static/image/imagem 2.png" alt="slide 1">
+            </div>
+
+            <div class="slide-box">
+                <img class="img-desktop" src="../../static/image/imagem 2.png" alt="slide 3">
+                <img class="img-mobile" src="../../static/image/imagem 2.png" alt="slide 3">
+            </div>
+
+
+        </div>
+    </section>
+    {%endblock%}
+    <!--Fim carrosel-->
+
+<!-- Card-->
+<main style="display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; padding: 20px;">
+    {% for index_pub in pub_index %}
+        {%if index_pub.on_true != 0 %}
+        <a href="{% url 'post_detail' name=index_pub.titulo id=index_pub.id %}" class="card1">
+            <img src="{{ index_pub.imgpub.url }}" alt="Imagem do pet">
+            <div class="card-content1">
+                <p><strong>Nome:</strong> {{ index_pub.titulo }}</p>
+                <p><strong>Raça:</strong> {{ index_pub.raca }}</p>
+                <p><strong>Castrado:</strong> {{ index_pub.castrado }}</p>
+                <p><strong>Idade:</strong> {{ index_pub.idade }}</p>
+                
+            </div>
+        </a>
+        {%endif%}
+    {% endfor %}
+</main>
+
+    <!--Fim Card-->
+
+    <!--Footer-->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="{%static 'image/petconnect.svg'%}" alt="Logo PetConnect" class="logo">
+            </div>
+            <div class="footer-social">
+                <a href="#" class="social-icon"><img src="{%static 'image/facebook.svg'%}" alt="Facebook"></a>
+                <a href="#" class="social-icon"><img src="{%static 'image/instagram.svg'%}" alt="Instagram"></a>
+                <a href="#" class="social-icon"><img src="{%static 'image/youtube.svg'%}" alt="YouTube"></a>
+                <a href="#" class="social-icon"><img src="{%static 'image/whatsapp.svg'%}" alt="WhatsApp"></a>
+            </div>
+        </div>
+        <p class="footer-copyright">
+            Copyright © 2024 - Todos os Direitos Reservados
+        </p>
+    </footer>
+    <!--Fim Footer-->
+
+
+    <script>
+        var radio = document.querySelector('.manual-btn')
+        var cont = 1
+
+        document.getElementById('radio1').checked = true
+
+        setInterval(() => {
+            proximaImg()
+        }, 5000)
+
+        function proximaImg() {
+            cont++
+
+            if (cont > 3) {
+                cont = 1
+            }
+
+            document.getElementById('radio' + cont).checked = true
+        }
+        // Fim Carrosel
+
+    </script>
+</body>
+
+</html>

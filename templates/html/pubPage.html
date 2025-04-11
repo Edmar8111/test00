@@ -1,0 +1,10 @@
+<a href="{%url 'edit_post' hash=inst_hash id=id %}">Edit Pub</a>
+<form action="{%url 'post_detail' id=id hash=inst_hash name=titulo%}" method="POST" enctype="multipart/form-data">
+    {%csrf_token%}
+    <button name="bt_delete" id="bt_delete" value="0">DELETE</button>
+    <script>
+        document.querySelector('#bt_delete').addEventListener('click', function(){
+            document.querySelector('#bt_delete').value=1;
+        })
+    </script>
+</form>

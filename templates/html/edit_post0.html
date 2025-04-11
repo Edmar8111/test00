@@ -1,0 +1,705 @@
+{%extends 'html/home.html'%}
+
+{% load static %}
+
+{%block home%}
+
+
+<div class="container mt-4">
+    {{msgPopup}}
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+            <h5>Editar Publicação</h5>
+        </div>
+        <div class="card-body" id="cardBody">
+            <form method="post" class="file Post" style="display: none;" action="{% url 'edit_post' hash=key_user id=id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file">
+                <input type="file">
+                <input type="file">
+                <input type="file">
+                <input type="file">
+                <button id="PostEdit"></button>
+                
+            </form>
+                <div class="mb-3" id="placeholderTitulo">
+                    <label for="titulo_new" class="form-label">Título:</label>
+                    <p style="display: none;" id="titulo">{{titulo}}</p>
+                    <input type="text" id="titulo_new" name="titulo_new" value="{{ titulo }}" class="form-control" required>
+                </div>
+                <div class="mb-3" id="placeholderIdade">
+                    <label for="idade_new" class="form-label">Idade do Pet:</label>
+                    <p style="display: none;" id="idade">{{idade}}</p>
+                    <input type="number" id="idade_new" max="99" name="idade_new" value="{{ idade }}" class="form-control" required>
+                    
+                </div>
+                <div class="mb-3" id="placeholderDescricao">
+                    <label for="descricao_new" class="form-label">Descrição:</label>
+                    <p style="display: none;" id="descricao">{{descricao}}</p>
+                    <input type="text" id="descricao_new" name="descricao_new" value="{{ descricao }}" class="form-control" required>
+                </div>
+                <div class="mb-3" id="selectPetSexo">
+                    <label for="petSexo" class="form-label">Sexo:</label>
+                    <select id="petSexo" name="petSexo" class="form-select">
+                        <option id="sexoBase">{{sexo}}</option>
+                        {% if sexo == 'MACHO' %}
+                        <option>FEMEA</option>
+                        {%else%}<option>MACHO</option>
+                        {%endif%}
+                    </select>
+                </div>
+                <div class="mb-3" id="selectPetType">
+                    <label for="petType" class="form-label">Tipo:</label>
+                    <select id="petType" name="petType" class="form-select">
+                        <option id="typeBase" style="text-transform: capitalize;">{{typePet}}</option>
+                        {% if typePet == 'cachorro' %}
+                            <option>Gato</option>
+                            <option>Outros</option>
+                        {%endif%}
+                        {%if typePet == 'gato' %}
+                            <option>Cachorro</option>
+                            <option>Outros</option>
+                        {%endif%}
+                        {%if typePet == 'outros' %}
+                            <option>Cachorro</option>
+                            <option>gato</option>
+                        {%endif%}
+                        {%if typePet == 'Desconhecido' %}
+                            <option>Cachorro</option>
+                            <option>Gato</option>
+                            <option>Outros</option>
+                        {%endif%}
+                    </select>
+                </div>
+                <div class="mb-3" id="selectCastramento">
+                    <label for="petCastramento" class="form-label">Castrado:</label>
+                    <select id="petCastramento" name="status" class="form-select">
+                        <option id="castradoBase">{{castrado}}</option>
+                        {%if castrado == 'Não' %}
+                            <option>Sim</option>
+                        {%else%}<option>Não</option>{%endif%}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <p id="oldStatus" style="display: none;">{{status}}</p>
+                    <label for="status" class="form-label">Ativo:</label>
+                    <select id="status" name="status" class="form-select">
+                        {%if status == 1 %}
+                            <option value="1">Sim</option>
+                            <option value="0">Não</option>
+                        {%else%}
+                            <option value="0">Não</option>
+                            <option value="1">Sim</option>
+                        {%endif%}
+                    </select>
+                </div>
+                
+                <div id="img_files" class="mb-3 row g-3" style="display:flex;justify-content:center;">
+                    <div class="col-md-4 position-relative" id="imageDisplay0">
+                        <div class="card border-0 shadow-sm" style="align-items:center;">
+                            <img src="{{ ImageFirst.url }}" style="width:215px;" id="imageFile0" alt="Imagem" class="card-img-top rounded img-thumbnail">
+                            <div class="card-body p-2 text-center">
+                                <input type="hidden" name="edit" id="edit" value='false'>
+                                <input type="file"  id='imageInput' class="form-control file-input" data-index="{{ forloop.counter }}">
+                                
+                            </div>
+                            <svg style="cursor: pointer; display: flex; width: 35px; position: absolute; top: -15px; height: 12%;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 512 512" version="1.1">
+                                <title>reset</title>
+                                <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Combined-Shape" fill="#000000" transform="translate(74.806872, 64.000000)">
+                                        <path d="M351.859794,42.6666667 L351.859794,85.3333333 L283.193855,85.3303853 C319.271288,116.988529 341.381875,163.321355 341.339886,213.803851 C341.27474,291.98295 288.098183,360.121539 212.277591,379.179704 C136.456999,398.237869 57.3818117,363.341907 20.3580507,294.485411 C-16.6657103,225.628916 -2.17003698,140.420413 55.5397943,87.68 C63.6931909,100.652227 75.1888658,111.189929 88.8197943,118.186667 C59.4998648,141.873553 42.4797783,177.560832 42.5264609,215.253333 C43.5757012,285.194843 100.577082,341.341203 170.526461,341.333333 C234.598174,342.388718 289.235113,295.138227 297.4321,231.584253 C303.556287,184.101393 282.297007,138.84385 245.195596,112.637083 L245.193128,192 L202.526461,192 L202.526461,42.6666667 L351.859794,42.6666667 Z M127.859794,-1.42108547e-14 C151.423944,-1.42108547e-14 170.526461,19.1025173 170.526461,42.6666667 C170.526461,66.230816 151.423944,85.3333333 127.859794,85.3333333 C104.295645,85.3333333 85.1931276,66.230816 85.1931276,42.6666667 C85.1931276,19.1025173 104.295645,-1.42108547e-14 127.859794,-1.42108547e-14 Z">
+                            
+                            </path>
+                                    </g>
+                                </g>
+                            </svg>    
+                        </div>
+                    <script>
+                        OldImage=NaN
+                        btRM=NaN
+                        countIMGAddr=new Array()
+                        changeImg=document.querySelector('#imageInput')
+                        function requestRemoveImg(){
+                            if(document.querySelector('div.col-md-4.position-relative').children[0].children[0].src!='https://www.svgrepo.com/show/532573/image-plus.svg' && document.querySelector('div.col-md-4.position-relative').children[0].children[1].children[1].files[0]==undefined){
+                                document.querySelector('div.col-md-4.position-relative').children[0].children[2].style.display='flex'
+                            }else{document.querySelector('div.col-md-4.position-relative').children[0].children[2].style.display='none'};
+                        }
+
+                        if(document.querySelector('div.col-md-4.position-relative').children[0].children[1].children[1].files[0]==undefined){
+                            requestRemoveImg();
+                        }
+                        
+                        changeImg.addEventListener('change', function(event){
+                            document.querySelector('#edit').value='true'
+                            OldImage=document.querySelector('#imageFile0').src
+                            Imagefile = event.target.files[0];
+                            dataTransfer=new DataTransfer()
+                            dataTransfer.items.add(event.target.files[0])
+                            changeImg.files=dataTransfer.files
+                            if(Imagefile){
+                                const FileImg = new FileReader();
+                                FileImg.readAsDataURL(Imagefile);
+                                FileImg.onload=function(e){
+                                    document.querySelector('#imageFile0').src=e.target.result;
+                                }
+                            };
+                            console.log(document.querySelector('form.file.Post').children[1].files[0])
+                            document.querySelector('form.file.Post').children[1].files[0]=dataTransfer.files;
+                            document.querySelector('form.file.Post').children[1].name=`${"{{id}}"}`;
+                            btRemove=document.createElement('img')
+                            btRemove.style.width='30px',btRemove.style.cursor='pointer',btRemove.style.position='relative',btRemove.style.left='185px',btRemove.style.bottom='265px',btRemove.style.zIndex='1',btRemove.src='https://images.icon-icons.com/603/PNG/96/delete_unapprove_discard_remove_x_red_icon-icons.com_55984.png'
+                            btRemove.id='btRemoveIMG'
+                            btRM=btRemove
+                            document.querySelector('#imageDisplay0').appendChild(btRemove)
+                            
+                        });
+                        setInterval(function(){
+                            requestRemoveImg();
+                            if(btRM!=NaN){
+                                btRM.onclick=function(){
+                                    changeImg.value=''
+                                    document.querySelector('form.file.Post').children[1].name=''
+                                    document.querySelector('#imageFile0').src=OldImage
+                                    setTimeout(function(){document.querySelector('#btRemoveIMG').remove();},100)
+                                    };
+                            };
+                            
+                        },500)
+                        document.querySelector('div.col-md-4.position-relative').children[0].children[2].addEventListener('click', function(){
+                            changeImg.click();
+                        })
+                    </script>
+                    
+                    
+                    </div>
+                    <!-- <div class="col-md-4 position-relative" id="imagedisplay00">
+                        <div class="card border-0 shadow-sm" style="align-items:center;" id="Imagedisplay">
+                            <img src="{{ url_img.url }}"  style="width:215px;" alt="Imagem" id="ImageDisplay" class="card-img-top rounded img-thumbnail">
+                            <div class="card-body p-2 text-center" id="divInputImg">
+                                <input type="hidden" name="file_old_{{ forloop.counter }}" id="fileEdit" value="false">
+                                <input type="file" class="form-control file-input" id="ImageInput00" data-index="{{ forloop.counter }}">
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="Image Active" style="display:none;">
+                        {% for url_img in imagesPub %}
+                            <img src="{{url_img.url}}" alt="" >
+                        {% endfor %}
+                        {%for imgID in ImagesID %}
+                            <p>{{imgID}}</p>
+                        {%endfor%}
+                    </div>
+                    <div class="tagIndexIMG" style="display:flex;flex-wrap: wrap;justify-content: center;">
+                        <div class="col-md-4 position-relative" style="display:none;flex-direction: column;align-items: center;">
+                            <img src="https://www.svgrepo.com/show/532573/image-plus.svg" alt="" class="card-img-top rounded img-thumbnail" style="width: 201px;">  
+                            <div class="card-body p-2 text-center" >
+                                <input type="file" class="form-control file-input">
+                            </div>
+                            <button style="background-color: crimson;box-shadow: 1px 1px 1px #ffff, 0px 0px 1px #ffff;width:36px;position:absolute;margin:0px 0px;height: 35px;border-radius: 50px;display: none;"><img src="https://www.svgrepo.com/show/500989/remove.svg" alt="" ></button>
+                            <svg style="cursor:pointer;display:none;width:35px;position:absolute;top:-15px;height:12%;" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
+                                <path d="M7 12L17 12" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="9" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <svg style="cursor:pointer;display:none;width:35px;position:absolute;top:-15px;height:12%;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 512 512" version="1.1">
+                                <title>reset</title>
+                                <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Combined-Shape" fill="#000000" transform="translate(74.806872, 64.000000)">
+                                        <path d="M351.859794,42.6666667 L351.859794,85.3333333 L283.193855,85.3303853 C319.271288,116.988529 341.381875,163.321355 341.339886,213.803851 C341.27474,291.98295 288.098183,360.121539 212.277591,379.179704 C136.456999,398.237869 57.3818117,363.341907 20.3580507,294.485411 C-16.6657103,225.628916 -2.17003698,140.420413 55.5397943,87.68 C63.6931909,100.652227 75.1888658,111.189929 88.8197943,118.186667 C59.4998648,141.873553 42.4797783,177.560832 42.5264609,215.253333 C43.5757012,285.194843 100.577082,341.341203 170.526461,341.333333 C234.598174,342.388718 289.235113,295.138227 297.4321,231.584253 C303.556287,184.101393 282.297007,138.84385 245.195596,112.637083 L245.193128,192 L202.526461,192 L202.526461,42.6666667 L351.859794,42.6666667 Z M127.859794,-1.42108547e-14 C151.423944,-1.42108547e-14 170.526461,19.1025173 170.526461,42.6666667 C170.526461,66.230816 151.423944,85.3333333 127.859794,85.3333333 C104.295645,85.3333333 85.1931276,66.230816 85.1931276,42.6666667 C85.1931276,19.1025173 104.295645,-1.42108547e-14 127.859794,-1.42108547e-14 Z">
+                            
+                            </path>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="col-md-4 position-relative" style="display:none;flex-direction: column;align-items: center;">
+                            <img src="https://www.svgrepo.com/show/532573/image-plus.svg" alt="" class="card-img-top rounded img-thumbnail" style="width: 201px;">  
+                            <div class="card-body p-2 text-center" >
+                                <input type="file" class="form-control file-input">
+                            </div>
+                            <button style="background-color: crimson;box-shadow: 1px 1px 1px #ffff, 0px 0px 1px #ffff;width:36px;position:absolute;margin:0px 0px;height: 35px;border-radius: 50px;display: none;"><img src="https://www.svgrepo.com/show/500989/remove.svg" alt="" ></button>
+                            <svg style="cursor:pointer;display:none;width:35px;position:absolute;top:-15px;height:12%;" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
+                                <path d="M7 12L17 12" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="9" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <svg style="cursor:pointer;display:none;width:35px;position:absolute;top:-15px;height:12%;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 512 512" version="1.1">
+                                <title>reset</title>
+                                <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Combined-Shape" fill="#000000" transform="translate(74.806872, 64.000000)">
+                                        <path d="M351.859794,42.6666667 L351.859794,85.3333333 L283.193855,85.3303853 C319.271288,116.988529 341.381875,163.321355 341.339886,213.803851 C341.27474,291.98295 288.098183,360.121539 212.277591,379.179704 C136.456999,398.237869 57.3818117,363.341907 20.3580507,294.485411 C-16.6657103,225.628916 -2.17003698,140.420413 55.5397943,87.68 C63.6931909,100.652227 75.1888658,111.189929 88.8197943,118.186667 C59.4998648,141.873553 42.4797783,177.560832 42.5264609,215.253333 C43.5757012,285.194843 100.577082,341.341203 170.526461,341.333333 C234.598174,342.388718 289.235113,295.138227 297.4321,231.584253 C303.556287,184.101393 282.297007,138.84385 245.195596,112.637083 L245.193128,192 L202.526461,192 L202.526461,42.6666667 L351.859794,42.6666667 Z M127.859794,-1.42108547e-14 C151.423944,-1.42108547e-14 170.526461,19.1025173 170.526461,42.6666667 C170.526461,66.230816 151.423944,85.3333333 127.859794,85.3333333 C104.295645,85.3333333 85.1931276,66.230816 85.1931276,42.6666667 C85.1931276,19.1025173 104.295645,-1.42108547e-14 127.859794,-1.42108547e-14 Z">
+                            
+                            </path>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="col-md-4 position-relative" style="display:none;flex-direction: column;align-items: center;">
+                            <img src="https://www.svgrepo.com/show/532573/image-plus.svg" alt="" class="card-img-top rounded img-thumbnail" style="width: 201px;">  
+                            <div class="card-body p-2 text-center" >
+                                <input type="file" class="form-control file-input">
+                            </div>
+                            <button style="background-color: crimson;box-shadow: 1px 1px 1px #ffff, 0px 0px 1px #ffff;width:36px;position:absolute;margin:0px 0px;height: 35px;border-radius: 50px;display: none;"><img src="https://www.svgrepo.com/show/500989/remove.svg" alt="" ></button>
+                            <svg style="cursor:pointer;display:none;width:35px;position:absolute;top:-15px;height:12%;" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
+                                <path d="M7 12L17 12" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="9" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <svg style="cursor:pointer;display:none;width:35px;position:absolute;top:-15px;height:12%;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 512 512" version="1.1">
+                                <title>reset</title>
+                                <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Combined-Shape" fill="#000000" transform="translate(74.806872, 64.000000)">
+                                        <path d="M351.859794,42.6666667 L351.859794,85.3333333 L283.193855,85.3303853 C319.271288,116.988529 341.381875,163.321355 341.339886,213.803851 C341.27474,291.98295 288.098183,360.121539 212.277591,379.179704 C136.456999,398.237869 57.3818117,363.341907 20.3580507,294.485411 C-16.6657103,225.628916 -2.17003698,140.420413 55.5397943,87.68 C63.6931909,100.652227 75.1888658,111.189929 88.8197943,118.186667 C59.4998648,141.873553 42.4797783,177.560832 42.5264609,215.253333 C43.5757012,285.194843 100.577082,341.341203 170.526461,341.333333 C234.598174,342.388718 289.235113,295.138227 297.4321,231.584253 C303.556287,184.101393 282.297007,138.84385 245.195596,112.637083 L245.193128,192 L202.526461,192 L202.526461,42.6666667 L351.859794,42.6666667 Z M127.859794,-1.42108547e-14 C151.423944,-1.42108547e-14 170.526461,19.1025173 170.526461,42.6666667 C170.526461,66.230816 151.423944,85.3333333 127.859794,85.3333333 C104.295645,85.3333333 85.1931276,66.230816 85.1931276,42.6666667 C85.1931276,19.1025173 104.295645,-1.42108547e-14 127.859794,-1.42108547e-14 Z">
+                            
+                            </path>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="col-md-4 position-relative" style="display:none;flex-direction: column;align-items: center;">
+                            <img src="https://www.svgrepo.com/show/532573/image-plus.svg" alt="" class="card-img-top rounded img-thumbnail" style="width: 201px;">  
+                            <div class="card-body p-2 text-center" >
+                                <input type="file" class="form-control file-input">
+                            </div>
+                            <button style="background-color: crimson;box-shadow: 1px 1px 1px #ffff, 0px 0px 1px #ffff;width:36px;position:absolute;margin:0px 0px;height: 35px;border-radius: 50px;display: none;"><img src="https://www.svgrepo.com/show/500989/remove.svg" alt="" ></button>
+                            <svg style="cursor:pointer;display:none;width:35px;position:absolute;top:-15px;height:12%;" xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 24 24" fill="none">
+                                <path d="M7 12L17 12" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="9" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <svg style="cursor:pointer;display:none;width:35px;position:absolute;top:-15px;height:12%;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 512 512" version="1.1">
+                                <title>reset</title>
+                                <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Combined-Shape" fill="#000000" transform="translate(74.806872, 64.000000)">
+                                        <path d="M351.859794,42.6666667 L351.859794,85.3333333 L283.193855,85.3303853 C319.271288,116.988529 341.381875,163.321355 341.339886,213.803851 C341.27474,291.98295 288.098183,360.121539 212.277591,379.179704 C136.456999,398.237869 57.3818117,363.341907 20.3580507,294.485411 C-16.6657103,225.628916 -2.17003698,140.420413 55.5397943,87.68 C63.6931909,100.652227 75.1888658,111.189929 88.8197943,118.186667 C59.4998648,141.873553 42.4797783,177.560832 42.5264609,215.253333 C43.5757012,285.194843 100.577082,341.341203 170.526461,341.333333 C234.598174,342.388718 289.235113,295.138227 297.4321,231.584253 C303.556287,184.101393 282.297007,138.84385 245.195596,112.637083 L245.193128,192 L202.526461,192 L202.526461,42.6666667 L351.859794,42.6666667 Z M127.859794,-1.42108547e-14 C151.423944,-1.42108547e-14 170.526461,19.1025173 170.526461,42.6666667 C170.526461,66.230816 151.423944,85.3333333 127.859794,85.3333333 C104.295645,85.3333333 85.1931276,66.230816 85.1931276,42.6666667 C85.1931276,19.1025173 104.295645,-1.42108547e-14 127.859794,-1.42108547e-14 Z">
+                            
+                            </path>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                    <script>
+                            NuN=0
+                            imgActive=new Array()
+                            tagIndexIMG=document.querySelector('div.tagIndexIMG')
+                            tagImgCount=document.querySelectorAll('div.Image.Active img')
+                            inputFormcount=new Array()
+                            inputFORM=new Array()
+
+                            function TransferFile(number, fileName='file0.txt'){
+                                arrayBuffer=new ArrayBuffer(4);
+                                dataView=new DataView(arrayBuffer);
+                                dataView.setInt32(0, number)
+                                
+                                blob=new Blob([arrayBuffer],{type:'application/octet-stream'});
+
+                                file=new File([blob],fileName,{type:'application/octet-steam'})
+
+                                return file;
+                            }
+
+
+                            for(a=0;a<tagImgCount.length;a++){document.querySelectorAll('div.col-md-4.position-relative')[a+1].childNodes[7].style.display='flex'}
+                            
+                            for(a=0;a<document.querySelectorAll('form.file.Post input').length;a++){
+                                if(document.querySelectorAll('form.file.Post input')[a]!=document.querySelectorAll('form.file.Post input')[0]){
+                                    inputFormcount.push(document.querySelectorAll('form.file.Post input')[a])
+                                    
+                                };
+                                
+                            };
+                            
+                            for(a=0;a<tagImgCount.length;a++){
+                                tagIndexIMG.children[a].children[0].src=tagImgCount[a].src
+                                tagIndexIMG.children[a].children[0].id=document.querySelectorAll('div.Image.Active p')[a].innerHTML
+                                tagIndexIMG.children[a].style.display='flex'
+                                imgActive.push(tagImgCount[a])
+                            };
+
+                            function requestInputForm(){
+                                for(a=0;a<inputFormcount.length;a++){console.log(`${a}ª`,inputFormcount[a].files)};
+                            };
+                            
+                            function removeIMG(tagValue){
+                                setTimeout(function(){
+                                    //Verificação do file upload
+                                    try{
+                                        //requista a old image se houver
+                                        if(tagValue==0&&tagImgCount.length>0){
+                                            inputFormcount[tagValue+1].name=''
+                                            inputFormcount[tagValue+1].files=undefined
+                                            tagIndexIMG.children[tagValue].children[0].src=tagImgCount[0].src='https://www.svgrepo.com/show/532573/image-plus.svg'
+                                            tagIndexIMG.children[tagValue].children[1].children[0].value=''
+                                            tagIndexIMG.children[tagValue].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue].children[2].style.display='none'
+                                            
+                                            console.log(inputFormcount[tagValue+1].files)
+                                        }
+                                        if(tagValue==0&&imgActive.length==1&&tagImgCount.length==0){
+                                            tagIndexIMG.children[tagValue].children[1].children[0].value=''
+                                            tagIndexIMG.children[tagValue].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue].children[0].src='https://www.svgrepo.com/show/532573/image-plus.svg'
+                                            tagIndexIMG.children[tagValue].children[2].style.display='none'
+                                            inputFormcount[tagValue+1].name=''
+                                            inputFormcount[tagValue+1].files[0]=undefined
+                                            console.log(tagIndexIMG.children[tagValue].children)
+                                            tagIndexIMG.children[tagValue+1].style.display='none'
+                                            imgActive.pop(0)
+                                        };
+                                        if(tagValue==0&&imgActive.length==2&&tagImgCount.length==0){
+                                            BeforeValue=tagIndexIMG.children[tagValue+1].children[1].children[0].files[0]
+                                            
+                                            inputFormcount[tagValue+1].files[0]=BeforeValue
+                                            inputFormcount[tagValue+2].name=''
+                                            inputFormcount[tagValue+2].files[0]=undefined
+
+                                            tagIndexIMG.children[tagValue+1].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue+1].children[1].children[0].value=''
+                                            tagIndexIMG.children[tagValue+1].children[0].src='https://www.svgrepo.com/show/532573/image-plus.svg'
+                                            tagIndexIMG.children[tagValue+1].children[2].style.display='none'
+
+                                            tagIndexIMG.children[tagValue+2].style.display='none'
+                                            imgActive.pop(1)
+                                        };
+                                        if(tagValue==0&&imgActive.length==3&&tagImgCount.length==0){
+                                            BeforeValue=tagIndexIMG.children[tagValue+1].children[1].children[0].files[0]
+                                            BeforeValue0=tagIndexIMG.children[tagValue+2].children[1].children[0].files[0]
+
+                                            inputFormcount[tagValue+1].files[0]=BeforeValue
+                                            inputFormcount[tagValue+2].files[0]=BeforeValue0
+                                            inputFormcount[tagValue+3].name=''
+                                            inputFormcount[tagValue+3].files[0]=undefined
+
+                                            tagIndexIMG.children[tagValue+2].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue+2].children[1].children[0].value=''
+                                            tagIndexIMG.children[tagValue+2].children[0].src='https://www.svgrepo.com/show/532573/image-plus.svg'
+                                            tagIndexIMG.children[tagValue+2].children[2].style.display='none'
+
+                                            tagIndexIMG.children[tagValue+3].style.display='none'
+
+                                            imgActive.pop(2)
+                                        };
+                                        if(tagValue==0&&imgActive.length==4&&tagImgCount.length==0){
+                                            BeforeValue=tagIndexIMG.children[tagValue+1].children[1].children[0].files[0]
+                                            BeforeValue0=tagIndexIMG.children[tagValue+2].children[1].children[0].files[0]
+                                            BeforeValue1=tagIndexIMG.children[tagValue+3].children[1].children[0].files[0]
+                                            
+                                            inputFormcount[tagValue+1].files[0]=BeforeValue
+                                            inputFormcount[tagValue+2].files[0]=BeforeValue0
+                                            inputFormcount[tagValue+3].files[0]=BeforeValue1
+                                            inputFormcount[tagValue+4].name=''
+                                            inputFormcount[tagValue+4].files[0]=undefined
+                                            
+                                            tagIndexIMG.children[tagValue+3].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue+3].children[1].children[0].value=''
+                                            tagIndexIMG.children[tagValue+3].children[0].src='https://www.svgrepo.com/show/532573/image-plus.svg'
+                                            tagIndexIMG.children[tagValue+3].children[2].style.display='none'
+                                            
+                                            console.log('request')
+
+                                            imgActive.pop(3)
+                                        }
+                                        //requista a old image se houver
+                                        if(tagValue==1&&tagImgCount.length>0){
+                                            tagIndexIMG.children[tagValue].children[0].src=tagImgCount[1].src
+                                            tagIndexIMG.children[tagValue].children[1].children[0].value=''
+                                            tagIndexIMG.children[tagValue].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue].children[2].style.display='none'
+                                            inputFormcount[tagValue+1].name=''
+                                            inputFormcount[tagValue+1].files[0]=undefined
+                                        }
+                                        if(tagValue==1&&imgActive.length==2&&tagImgCount.length==1){
+                                            tagIndexIMG.children[tagValue].children[0].src='https://www.svgrepo.com/show/532573/image-plus.svg';  
+                                
+                                            inputFormcount[tagValue+1].name=''
+                                            inputFormcount[tagValue+1].files[0]=''
+                                            tagIndexIMG.children[tagValue].children[1].children[0].value=''
+                                            tagIndexIMG.children[tagValue+1].style.display='none'
+                                            setTimeout(function(){tagIndexIMG.children[tagValue].children[2].style.display='none'},100)
+                                            imgActive.pop(1)
+
+                                        }
+                                        if(tagValue==1&&imgActive.length==3&&tagImgCount.length==1){
+                                            afterValue=tagIndexIMG.children[tagValue+1].children[1].children[0].files[0]
+                                            
+                                            fileReader=new FileReader()
+                                            
+                                            fileReader.readAsDataURL(tagIndexIMG.children[tagValue+1].children[1].children[0].files[0])
+                                            fileReader.onload=function(e){tagIndexIMG.children[tagValue].children[0].src=e.target.result}
+                                            inputFormcount[tagValue+2].name=''
+                                            inputFormcount[tagValue+2].files[0]=afterValue
+                                            tagIndexIMG.children[tagValue].children[1].children[0].files[0]=afterValue
+                                            tagIndexIMG.children[tagValue+1].children[0].src='https://www.svgrepo.com/show/532573/image-plus.svg'
+                                            tagIndexIMG.children[tagValue+1].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue+1].children[1].children[0].value=''
+                                            
+                                            tagIndexIMG.children[tagValue+2].style.display='none'
+                                            setTimeout(function(){tagIndexIMG.children[tagValue+1].children[2].style.display='none'},500);
+                                            imgActive.pop(2)
+                                        }
+                                        if(tagValue==1&&imgActive.length==4&&tagImgCount.length==1){
+                                            ValueBefore0=tagIndexIMG.children[tagValue+1].children[1].children[0].files[0]
+                                            ValueBefore1=tagIndexIMG.children[tagValue+2].children[1].children[0].files[0]
+                                            inputFormcount[tagValue+1].files[0]=ValueBefore0
+                                            inputFormcount[tagValue+1].files[0]=ValueBefore1
+                                            inputFormcount[tagValue+3].files[0]=''
+                                            inputFormcount[tagValue+3].name=''
+
+                                            fileReader=new FileReader()
+                                            fileReader.readAsDataURL(ValueBefore0)
+                                            fileReader.onload=function(e){
+                                            tagIndexIMG.children[tagValue].children[0].src=e.target.result}
+                                                
+                                            fileReader=new FileReader()
+                                            fileReader.readAsDataURL(ValueBefore1)
+                                            fileReader.onload=function(e){
+                                            tagIndexIMG.children[tagValue+1].children[0].src=e.target.result}
+
+                                            InputValue0=tagIndexIMG.children[tagValue].children[1].children[0]
+                                            InputValue1=tagIndexIMG.children[tagValue+1].children[1].children[0]
+                                            InputValue0=ValueBefore0
+                                            InputValue0=ValueBefore1
+                                            
+                                            tagIndexIMG.children[tagValue+2].children[1].children[0].value=''   
+                                            tagIndexIMG.children[tagValue+2].children[2].style.display='none'
+                                            tagIndexIMG.children[tagValue+2].children[0].src='https://www.svgrepo.com/show/532573/image-plus.svg'
+                                            
+
+                                            imgActive.pop(3)    
+                                        }
+                                        //requista a old image se houver
+                                        if(tagValue==2&&tagImgCount.length>0){
+                                            tagIndexIMG.children[tagValue].children[0].src=tagImgCount[2].src
+                                            tagIndexIMG.children[tagValue].children[1].children[0].value=''
+                                            tagIndexIMG.children[tagValue].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue].children[2].style.display='none'
+                                            inputFormcount[tagValue+1].name=''
+                                            inputFormcount[tagValue+1].files[0]=undefined
+                                        }
+                                        if(tagValue==2&&imgActive.length==3&&tagImgCount.length==2){
+                                            tagIndexIMG.children[tagValue].children[0].src='https://www.svgrepo.com/show/532573/image-plus.svg';  
+                                            inputFormcount[tagValue+1].name=''
+                                            inputFormcount[tagValue+1].files[0]=undefined
+                                            tagIndexIMG.children[tagValue].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue].children[1].children[0].value=''
+                                            tagIndexIMG.children[tagValue].children[2].style.display='none'
+                                            tagIndexIMG.children[tagValue+1].style.display='none'
+                                            imgActive.pop(2)
+                                        }
+                                        if(tagValue==2&&imgActive.length==4&&tagImgCount.length==2){
+                                            ValueBefore0=tagIndexIMG.children[tagValue+1].children[1].children[0].files[0]
+                                            inputFormcount[tagValue+1].files[0]=ValueBefore0
+                                            inputFormcount[tagValue+2].files[0]=''
+                                            inputFormcount[tagValue+2].name=''
+
+                                            fileRead=new FileReader()
+                                            fileRead.readAsDataURL(ValueBefore0)
+                                            fileRead.onload=function(e){tagIndexIMG.children[tagValue].children[0].src=e.target.result}
+                                            tagIndexIMG.children[tagValue+1].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue+1].children[1].children[0].value=''
+                                            console.log(tagIndexIMG.children[tagValue+1].children[1].children[0])
+
+                                            tagIndexIMG.children[tagValue+1].children[2].style.display='none'
+                                            tagIndexIMG.children[tagValue+1].children[0].src='https://www.svgrepo.com/show/532573/image-plus.svg'
+                                            imgActive.pop(3)
+                                        }
+                                        
+                                        //requista a old image se houver
+                                        if(tagValue==3&&tagImgCount.length>0){
+                                            tagIndexIMG.children[tagValue].children[0].src=tagImgCount[3].src
+                                            tagIndexIMG.children[tagValue].children[1].children[0].value=''
+                                            tagIndexIMG.children[tagValue].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue].children[2].style.display='none'
+                                            inputFormcount[tagValue+1].name=''
+                                            inputFormcount[tagValue+1].files[0]=undefined
+                                        }
+                                        if(tagValue==3&&tagImgCount==3){
+                                            tagIndexIMG.children[tagValue].children[0].src='https://www.svgrepo.com/show/532573/image-plus.svg';  
+                                            
+                                            tagIndexIMG.children[tagValue].children[1].children[0].files[0]=undefined
+                                            tagIndexIMG.children[tagValue].children[1].children[0].value=''
+                                            inputFormcount[tagValue+1].name=''
+                                            inputFormcount[tagValue+1].files[0]=''
+                                            console.log('request')
+                                            imgActive.pop(3)
+                                            tagIndexIMG.children[tagValue].children[2].style.display='none'
+                                        }
+                                    
+                                    
+                                }catch(error){console.log('error')}
+                                },500)
+                                
+                            }
+                            
+                            if(imgActive.length<4){
+                                
+                                console.log("request")
+                                tagIndexIMG.children[imgActive.length].style.display='flex'};
+                            
+                            function tagFunctionAddr(event){
+                                if(imgActive.length<4){
+                                    //bug
+                                        
+                                        dataTransfer=new DataTransfer();
+                                        
+                                        if(tagIndexIMG.children[imgActive.length].children[1].children[0].files[0]!=undefined){
+                                            tagIndexIMG.children[imgActive.length].children[2].style.display='flex'
+                                            dataTransfer.items.add(tagIndexIMG.children[imgActive.length].children[1].children[0].files[0])
+                                            inputFormcount[imgActive.length+1].files=dataTransfer.files
+                                            inputFormcount[imgActive.length+1].name=imgActive.length+1
+                                            console.log(imgActive.length)
+                                            fileReader=new FileReader()
+                                            fileReader.readAsDataURL(tagIndexIMG.children[imgActive.length].children[1].children[0].files[0])
+                                            fileReader.onload=function(e){tagIndexIMG.children[imgActive.length-1].children[0].src=e.target.result}
+                                            
+                                                imgActive.push(tagIndexIMG.children[imgActive.length].children[0]);
+                                                setTimeout(function(){
+                                                    tagFunctionAddr();
+                                                    if(imgActive.length<4){
+                                                        
+                                                    tagIndexIMG.children[imgActive.length].style.display='flex'}
+                                                },500);
+                                            };}
+                                        else{
+                                            fileTransfer=new DataTransfer();
+                                            fileTransfer.items.add(document.querySelectorAll('div.col-md-4.position-relative')[NuN].children[1].children[0].files[0])
+                                            fileReader=new FileReader()
+                                            fileReader.readAsDataURL(fileTransfer.files[0])
+                                            console.log(document.querySelectorAll('div.col-md-4.position-relative')[NuN].children[2].style.display='flex')
+                                            fileReader.onload=function(e){document.querySelectorAll('div.col-md-4.position-relative')[NuN].children[0].src=e.target.result}
+                                            inputFormcount[NuN].name=document.querySelectorAll('div.col-md-4.position-relative')[NuN].children[0].id
+                                            inputFormcount[NuN].files[0]=fileTransfer.files[0]
+                                }
+                            };
+
+                            tagIndexIMG.children[0].children[1].children[0].addEventListener('change', function(){NuN=1;tagFunctionAddr()})
+
+                            tagIndexIMG.children[1].children[1].children[0].addEventListener('change', function(){NuN=2;tagFunctionAddr()})
+                            
+                            tagIndexIMG.children[2].children[1].children[0].addEventListener('change', function(){NuN=3;tagFunctionAddr()})
+                            
+                            tagIndexIMG.children[3].children[1].children[0].addEventListener('change', function(){NuN=4;tagFunctionAddr()})
+
+                            if(imgActive.length==5){
+                                
+                                tag=document.createElement('div')
+                                tag.className='col-md-4 position-relative'
+                                tag.innerHTML=`<div class='card border-0 shadow-sm' style="align-items:center;" id=BoxIMG${tagImgCount.length}>
+                                    <img src='https://www.svgrepo.com/show/532573/image-plus.svg' style="width:215px;"  alt='Imagem' class='card-img-top rounded img-thumbnail'>
+                                    <div class='card-body p-2 text-center' id='divInputImg'>
+                                        <input type='hidden'  value="false" id=BoxIMG${tagImgCount.length}A>
+                                        <input type='file' class='form-control file-input' id='ImageNewPUT0'>
+                                        </div>
+                                        </div>`
+                                        document.querySelector('#img_files').appendChild(tag)
+                                    };
+                            
+                            tagIndexIMG.children[0].children[2].addEventListener('click', function(){removeIMG(0)})
+                            tagIndexIMG.children[1].children[2].addEventListener('click', function(){removeIMG(1)})
+                            tagIndexIMG.children[2].children[2].addEventListener('click', function(){removeIMG(2)})
+                            tagIndexIMG.children[3].children[2].addEventListener('click', function(){removeIMG(3)})
+                            
+                            
+                            function requestRemoveOldIMG(tagValue){
+                                imgActive[tagValue]=document.querySelectorAll('div.col-md-4.position-relative')[tagValue+1].childNodes[1].src
+                                document.querySelectorAll('div.col-md-4.position-relative')[tagValue+1].childNodes[7].style.display='none'
+                                document.querySelectorAll('div.col-md-4.position-relative')[tagValue+1].childNodes[9].style.display='flex'
+                                convertID=TransferFile(parseInt(tagIndexIMG.children[tagValue].children[0].id))
+                                convertDataFile=new DataTransfer()
+                                convertDataFile.items.add(convertID)
+                                inputFormcount[tagValue+1].name=`${tagValue+1}`
+                                inputFormcount[tagValue+1].files=convertDataFile.files
+                                setTimeout(function(){
+                                    tagIndexIMG.children[tagValue].children[0].src='https://www.svgrepo.com/show/532573/image-plus.svg'
+                                    tagIndexIMG.children[tagValue].children[1].children[0].value=''
+                                    tagIndexIMG.children[tagValue].children[1].children[0].files[0]=undefined
+                                    tagIndexIMG.children[tagValue].children[2].style.display='none'},100)
+                            }
+
+                            function requestOldIMG(tagValue){
+                                tagIndexIMG.children[tagValue].children[0].src=imgActive[tagValue]
+                                inputFormcount[tagValue+1].name=''
+                                inputFormcount[tagValue+1].files=undefined
+                                document.querySelectorAll('div.col-md-4.position-relative')[tagValue+1].childNodes[9].style.display='none'
+                                document.querySelectorAll('div.col-md-4.position-relative')[tagValue+1].childNodes[7].style.display='flex'
+                                
+                            }
+                            document.querySelectorAll('div.col-md-4.position-relative')[1].childNodes[7].addEventListener('click', function(){requestRemoveOldIMG(0)})
+                            document.querySelectorAll('div.col-md-4.position-relative')[2].childNodes[7].addEventListener('click', function(){requestRemoveOldIMG(1)})
+                            document.querySelectorAll('div.col-md-4.position-relative')[3].childNodes[7].addEventListener('click', function(){requestRemoveOldIMG(2)})
+                            document.querySelectorAll('div.col-md-4.position-relative')[4].childNodes[7].addEventListener('click', function(){requestRemoveOldIMG(3)})
+
+                            document.querySelectorAll('div.col-md-4.position-relative')[1].childNodes[9].addEventListener('click', function(){requestOldIMG(0)})
+                            document.querySelectorAll('div.col-md-4.position-relative')[2].childNodes[9].addEventListener('click', function(){requestOldIMG(1)})
+                            document.querySelectorAll('div.col-md-4.position-relative')[3].childNodes[9].addEventListener('click', function(){requestOldIMG(2)})
+                            document.querySelectorAll('div.col-md-4.position-relative')[4].childNodes[9].addEventListener('click', function(){requestOldIMG(3)})
+                    </script>
+
+                </div>
+                
+                <button type="submit" id="btActivePost" class="btn btn-primary w-100">Editar</button>
+                <script>
+                    function verifyInfos(){
+                        if(document.querySelector('#status').value!=document.querySelector('#oldStatus').innerHTML){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#status').value
+                            tag.name='statusNew'
+                            document.querySelector('form.file.Post').appendChild(tag)
+                        };
+                        if(document.querySelector('#titulo').innerHTML!=document.querySelector('#titulo_new').value){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#titulo_new').value
+                            tag.name='tituloNew'
+                            document.querySelector('form.file.Post').appendChild(tag)
+                        }
+                        if(document.querySelector('#descricao').innerHTML!=document.querySelector('#descricao_new').value){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#descricao_new').value
+                            tag.name='descricaoNew'
+                            document.querySelector('form.file.Post').appendChild(tag)
+                        }
+                        if(document.querySelector('#petSexo').value!=document.querySelector('#sexoBase').innerHTML){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#petSexo').value
+                            tag.name='sexoNew'
+                            document.querySelector('form.file.Post').appendChild(tag)
+                        }
+                        if(document.querySelector('#petType').value!=document.querySelector('#typeBase').innerHTML){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#petType').value
+                            tag.name='typeNew'
+                            document.querySelector('form.file.Post').appendChild(tag)
+                        }
+                        if(document.querySelector('#idade').innerHTML!=document.querySelector('#idade_new').value){
+                            tag=document.createElement('input');
+                            if(parseInt(document.querySelector('#idade_new').value)>99){document.querySelector('#idade_new').value=99}
+                            if(parseInt(document.querySelector('#idade_new').value)<0){document.querySelector('#idade_new').value=0}
+                            tag.value=document.querySelector('#idade_new').value
+                            tag.name='idadeNew'
+                            document.querySelector('form.file.Post').appendChild(tag)
+                        }
+                        if(document.querySelector('#petCastramento').value!=document.querySelector('#castradoBase').innerHTML){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#petCastramento').value
+                            tag.name='castramentoNew'
+                            document.querySelector('form.file.Post').appendChild(tag)
+                        }
+                    }
+                    document.querySelector('#btActivePost').addEventListener('click', function(){
+                        verifyInfos();
+                        setTimeout(function(){document.querySelector('#PostEdit').click()},500)
+                    })
+                </script>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+    }
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+</style>
+    
+</form>
+{%endblock%}

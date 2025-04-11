@@ -1,0 +1,505 @@
+{%extends 'html/home.html'%}
+
+{% load static %}
+
+{%block home%}
+
+
+<div class="container mt-4">
+    {{msgPopup}}
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+            <h5>Editar Publicação</h5>
+        </div>
+        <div class="card-body" id="cardBody">
+            <form method="post" id="imagePost" style="display: none;" action="{% url 'edit_post' hash=key_user id=id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file">
+                <input type="file">
+                <input type="file">
+                <input type="file">
+                <input type="file">
+                <button id="PostEdit"></button>
+                
+            </form>
+                <div class="mb-3" id="placeholderTitulo">
+                    <label for="titulo_new" class="form-label">Título:</label>
+                    <p style="display: none;" id="titulo">{{titulo}}</p>
+                    <input type="text" id="titulo_new" name="titulo_new" value="{{ titulo }}" class="form-control" required>
+                </div>
+                <div class="mb-3" id="placeholderIdade">
+                    <label for="idade_new" class="form-label">Idade do Pet:</label>
+                    <p style="display: none;" id="idade">{{idade}}</p>
+                    <input type="number" id="idade_new" name="idade_new" value="{{ idade }}" class="form-control" required>
+                </div>
+                <div class="mb-3" id="placeholderDescricao">
+                    <label for="descricao_new" class="form-label">Descrição:</label>
+                    <p style="display: none;" id="descricao">{{descricao}}</p>
+                    <input type="text" id="descricao_new" name="descricao_new" value="{{ descricao }}" class="form-control" required>
+                </div>
+                <div class="mb-3" id="selectPetSexo">
+                    <label for="petSexo" class="form-label">Sexo:</label>
+                    <select id="petSexo" name="petSexo" class="form-select">
+                        <option id="sexoBase">{{sexo}}</option>
+                        {% if sexo == 'MACHO' %}
+                        <option>FEMEA</option>
+                        {%else%}<option>MACHO</option>
+                        {%endif%}
+                    </select>
+                </div>
+                <div class="mb-3" id="selectPetType">
+                    <label for="petType" class="form-label">Tipo:</label>
+                    <select id="petType" name="petType" class="form-select">
+                        <option id="typeBase" style="text-transform: capitalize;">{{typePet}}</option>
+                        {% if typePet == 'cachorro' %}
+                            <option>Gato</option>
+                            <option>Outros</option>
+                        {%endif%}
+                        {%if typePet == 'gato' %}
+                            <option>Cachorro</option>
+                            <option>Outros</option>
+                        {%endif%}
+                        {%if typePet == 'outros' %}
+                            <option>Cachorro</option>
+                            <option>gato</option>
+                        {%endif%}
+                        {%if typePet == 'Desconhecido' %}
+                            <option>Cachorro</option>
+                            <option>Gato</option>
+                            <option>Outros</option>
+                        {%endif%}
+                    </select>
+                </div>
+                <div class="mb-3" id="selectCastramento">
+                    <label for="petCastramento" class="form-label">Castrado:</label>
+                    <select id="petCastramento" name="status" class="form-select">
+                        <option id="castradoBase">{{castrado}}</option>
+                        {%if castrado == 'Não' %}
+                            <option>Sim</option>
+                        {%else%}<option>Não</option>{%endif%}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Ativo:</label>
+                    <select id="status" name="status" class="form-select">
+                        <option value="1">Sim</option>
+                        <option value="0">Não</option>
+                    </select>
+                </div>
+                
+                <div id="img_files" class="mb-3 row g-3">
+                    <div class="col-md-4 position-relative" id="imageDisplay0">
+                        <div class="card border-0 shadow-sm" style="align-items:center;">
+                            <img src="{{ ImageFirst.url }}" style="width:215px;" id="imageFile0" alt="Imagem" class="card-img-top rounded img-thumbnail">
+                            <div class="card-body p-2 text-center">
+                                <input type="hidden" name="edit" id="edit" value='false'>
+                                <input type="file"  id='imageInput' class="form-control file-input" data-index="{{ forloop.counter }}">
+                                
+                            </div>
+                        </div>
+                    <script>
+                        OldImage=NaN
+                        btRM=NaN
+                        changeImg=document.querySelector('#imageInput')
+                        changeImg.addEventListener('change', function(event){
+                            document.querySelector('#edit').value='true'
+                            OldImage=document.querySelector('#imageFile0').src
+                            Imagefile = event.target.files[0];
+                            dataTransfer=new DataTransfer()
+                            dataTransfer.items.add(event.target.files[0])
+                            changeImg.files=dataTransfer.files
+                            
+                            if(Imagefile){
+                                const FileImg = new FileReader();
+                                FileImg.readAsDataURL(Imagefile);
+                                FileImg.onload=function(e){
+                                    document.querySelector('#imageFile0').src=e.target.result;
+                                }
+                            };
+                            document.querySelectorAll('#imagePost input')[1].files=dataTransfer.files,document.querySelectorAll('#imagePost input')[1].name=`${"{{id}}"}`;
+                            btRemove=document.createElement('img')
+                            btRemove.style.width='30px',btRemove.style.cursor='pointer',btRemove.style.position='relative',btRemove.style.left='185px',btRemove.style.bottom='265px',btRemove.style.zIndex='1',btRemove.src='https://images.icon-icons.com/603/PNG/96/delete_unapprove_discard_remove_x_red_icon-icons.com_55984.png'
+                            btRemove.id='btRemoveIMG'
+                            btRM=btRemove
+                            document.querySelector('#imageDisplay0').appendChild(btRemove)
+                            
+                        });
+                        setInterval(function(){
+                            if(btRM!=NaN){
+                                btRM.onclick=function(){
+                                    changeImg.value=''
+                                    document.querySelectorAll('#imagePost input')[1].name=''
+                                    document.querySelector('#imageFile0').src=OldImage
+                                    setTimeout(function(){document.querySelector('#btRemoveIMG').remove();},100)
+                                    };
+                            };
+                            
+                        },500)
+                    </script>
+                    </div>
+                    {% for url_img in imagesPub %}
+                        <div class="col-md-4 position-relative" id="imagedisplay00">
+                            <div class="card border-0 shadow-sm" style="align-items:center;" id="Imagedisplay">
+                                <img src="{{ url_img.url }}"  style="width:215px;" alt="Imagem" id="ImageDisplay" class="card-img-top rounded img-thumbnail">
+                                <div class="card-body p-2 text-center" id="divInputImg">
+                                    <input type="hidden" name="file_old_{{ forloop.counter }}" id="fileEdit" value="false">
+                                    <input type="file" class="form-control file-input" id="ImageInput00" data-index="{{ forloop.counter }}">
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    
+                    <script>
+
+                        countImagePut=0
+                        idCountFiles=0
+                        InputArray=new Array()
+                        imageDisplay=new Array()
+                        fileEditArray=new Array()
+                        formInputArray=new Array()
+                        IDimageArray={{ImagesID|safe}}
+                        OldImageArray=new Array()
+                        btRMArray=new Array()
+                        function addNewImgTAG(){
+                            setTimeout(function(){
+                                valuNode=document.querySelectorAll('div.col-md-4.position-relative')[parseInt(parseInt(imageDisplay.length)-parseInt(OldImageArray.length))+1].childNodes[0].children.length
+                                removeTag=new Array()
+                                for(a=0;a<valuNode;a++){
+                                if(document.querySelectorAll('div.col-md-4.position-relative')[parseInt(parseInt(imageDisplay.length)-parseInt(OldImageArray.length))+1].childNodes[0].children[a].id=='btRemoveIMG1'){
+                                    removeTag.push(document.querySelectorAll('div.col-md-4.position-relative')[parseInt(parseInt(imageDisplay.length)-parseInt(OldImageArray.length))+1].childNodes[0].children[a])
+                                };
+                                if(removeTag.length>1){removeTag[1].remove()}
+                            }},100);
+
+
+                            if(imageDisplay.length<4){
+                                tag=document.createElement('div')
+                                tag.className='col-md-4 position-relative'
+                                tag.innerHTML=`<div class='card border-0 shadow-sm' style="align-items:center;" id=BoxIMG${imageDisplay.length}>
+                                    <img src='https://www.svgrepo.com/show/532573/image-plus.svg' style="width:215px;"  alt='Imagem' class='card-img-top rounded img-thumbnail'>
+                                    <div class='card-body p-2 text-center' id='divInputImg'>
+                                        <input type='hidden'  value="false" id=BoxIMG${imageDisplay.length}A>
+                                        <input type='file' class='form-control file-input' id='ImageNewPUT0'>
+                                        </div>
+                                        </div>`
+                                document.querySelector('#img_files').appendChild(tag)
+                            };
+                            //executa a adição do bt remove na img adicional
+                            if(document.querySelector(`#BoxIMG${imageDisplay.length-1}` && imageDisplay.length<3)){
+                                InputArray.push(document.querySelector(`#BoxIMG${imageDisplay.length-1}A`))
+                                btRemove=document.createElement('img')
+                                btRemove.style.width='30px',btRemove.style.cursor='pointer',btRemove.style.position='relative',btRemove.style.left='0',btRemove.style.right='0',btRemove.style.bottom='265px',btRemove.style.zIndex='1',btRemove.src='https://images.icon-icons.com/603/PNG/96/delete_unapprove_discard_remove_x_red_icon-icons.com_55984.png'
+                                btRemove.id=`btRemoveIMG${parseInt(imageDisplay.length)-1}`
+                                btRMArray[parseInt(imageDisplay.length-1)]=btRemove
+                                document.querySelector(`#BoxIMG${imageDisplay.length-1}`).appendChild(btRMArray[imageDisplay.length-1])
+                            }
+                        };
+                        
+                        function RequestIMAGEID(){for(a=0;a<document.querySelectorAll('#Imagedisplay img').length;a++){
+                            
+                            imageDisplay.push(document.querySelectorAll('#Imagedisplay img')[a]);
+                            OldImageArray.push(imageDisplay[a].src)
+                            IDimageArray.push(parseInt(document.querySelectorAll('#Imagedisplay img')[a].id))}};
+                        
+                        for(a=0;a<4;a++){btRMArray.push(0)}
+
+                        for(a=0;a<imageDisplay.length;a++){imageDisplay[a].id=IDimageArray[a]}
+                        
+                        for(a=0;a<document.querySelectorAll('#imagePost input').length;a++){
+                            formInputArray.push(document.querySelectorAll('#imagePost input')[a])
+                        }
+    
+                        for(countImagePut=0;countImagePut<document.querySelectorAll('#divInputImg input').length;countImagePut++){
+                            if(document.querySelectorAll('#divInputImg input')[countImagePut].id=='ImageInput00'){
+                                document.querySelectorAll('#divInputImg input')[countImagePut].id=`ImageInput${idCountFiles}`;
+                                idCountFiles++;
+                                InputArray.push(document.querySelectorAll('#divInputImg input')[countImagePut])
+                            }else{fileEditArray.push(document.querySelectorAll('#divInputImg input')[countImagePut])}
+                        };
+
+                        //executa a requisição das funções de info
+                        if(imageDisplay.length<3){
+                            RequestIMAGEID()
+                            addNewImgTAG();};
+
+                        function requestPrevIMG(){
+                            Imagefile=document.querySelector('#ImageNewPUT0').files[0];
+                            dataTransfer=new DataTransfer();
+                            dataTransfer.items.add(document.querySelector('#ImageNewPUT0').files[0])
+                            document.querySelector(`#ImageNewPUT0`).files=dataTransfer.files;
+                            
+                            // formInputArray[parseInt(imageDisplay.length)+2].files=dataTransfer.files;
+                            // formInputArray[parseInt(imageDisplay.length)+2].name=parseInt(imageDisplay.length)
+                            
+                            if(Imagefile){
+                                FileImg=new FileReader();
+                                FileImg.readAsDataURL(Imagefile);
+                                FileImg.onload=function(e){document.querySelector(`#BoxIMG${imageDisplay.length} img`).src=e.target.result}
+                            };
+                            
+                            //executa a criação de uma nova tag de input img
+                            setTimeout(function(){
+                                if(imageDisplay.length==4){
+                                    InputArray.push(document.querySelector(`#BoxIMG${imageDisplay.length}A`))
+                                    btRemove=document.createElement('img')
+                                    btRemove.style.width='30px',btRemove.style.cursor='pointer',btRemove.style.position='relative',btRemove.style.left='0',btRemove.style.right='0',btRemove.style.bottom='265px',btRemove.style.zIndex='1',btRemove.src='https://images.icon-icons.com/603/PNG/96/delete_unapprove_discard_remove_x_red_icon-icons.com_55984.png'
+                                    btRemove.id='btRemoveIMG'
+                                    btRMArray[imageDisplay.length]=btRemove
+                                    document.querySelector(`#BoxIMG${imageDisplay.length}`).appendChild(btRMArray[imageDisplay.length])
+                                };
+                                if(imageDisplay.length<3){
+                                    document.querySelector(`#ImageNewPUT0`).id=`fileZERO${imageDisplay.length}`;
+                                    imageDisplay.push(document.querySelector(`#BoxIMG${imageDisplay.length} img`));
+                                    addNewImgTAG();
+                                   }
+                                 },100)
+                            };
+
+                        setInterval(function(){
+                            if(document.querySelector(`#ImageNewPUT0`).value!=''){
+                                requestPrevIMG()};
+                            
+                            
+                        },500)
+                            
+                        
+                        if(InputArray[0]){InputArray[0].addEventListener('change',function(event){
+                            Imagefile = event.target.files[0];
+                            dataTransfer=new DataTransfer();
+                            dataTransfer.items.add(event.target.files[0])
+                            InputArray[0].files=dataTransfer.files
+                                formInputArray[2].files=dataTransfer.files
+                                formInputArray[2].name=IDimageArray[0] 
+                                fileEditArray[0].value=true
+                                if(Imagefile){
+                                    const FileImg = new FileReader();
+                                    FileImg.readAsDataURL(Imagefile);
+                                    FileImg.onload=function(e){
+                                        imageDisplay[0].src=e.target.result;
+                                    }
+                                };
+                                btRemove=document.createElement('img')
+                                btRemove.style.width='30px',btRemove.style.cursor='pointer',btRemove.style.position='relative',btRemove.style.left='0',btRemove.style.right='0',btRemove.style.bottom='265px',btRemove.style.zIndex='1',btRemove.src='https://images.icon-icons.com/603/PNG/96/delete_unapprove_discard_remove_x_red_icon-icons.com_55984.png'
+                                btRemove.id='btRemoveIMG'
+                                btRMArray[0]=btRemove
+                                document.querySelectorAll('#Imagedisplay')[0].appendChild(btRemove)
+                            })};
+                            setInterval(function(){
+                                if(btRMArray[0]!=0 ){
+                                    btRMArray[0].onclick=function(){
+                                        InputArray[0].value=''
+                                        formInputArray[2].name=''
+                                        if(OldImageArray[0]){imageDisplay[0].src=OldImageArray[0]}
+                                        else{
+                                            
+                                            imageDisplay.pop();
+                                            addNewImgTAG();
+                                        };
+                                            
+                                        setTimeout(function(){
+                                            document.querySelectorAll('div.col-md-4.position-relative')[1].childNodes[1].children[2].remove();
+                                            btRMArray[0]=0},100)
+                                        };
+                                }
+                            
+                        },500)
+                        if(InputArray[1]){InputArray[1].addEventListener('change',function(event){
+                            //coment 
+                            Imagefile = event.target.files[0];
+                                dataTransfer=new DataTransfer()
+                                dataTransfer.items.add(event.target.files[0])
+                                InputArray[1].files=dataTransfer.files
+                                formInputArray[3].files=dataTransfer.files
+                                formInputArray[3].name=IDimageArray[1]
+                                fileEditArray[1].value=true
+                                if(Imagefile){
+                                    const FileImg = new FileReader();
+                                    FileImg.readAsDataURL(Imagefile);
+                                    FileImg.onload=function(e){
+                                        imageDisplay[1].src=e.target.result;
+                                    }
+                                };
+                                btRemove=document.createElement('img')
+                                btRemove.style.width='30px',btRemove.style.cursor='pointer',btRemove.style.position='relative',btRemove.style.left='0',btRemove.style.right='0',btRemove.style.bottom='265px',btRemove.style.zIndex='1',btRemove.src='https://images.icon-icons.com/603/PNG/96/delete_unapprove_discard_remove_x_red_icon-icons.com_55984.png'
+                                btRemove.id='btRemoveIMG'
+                                btRMArray[1]=btRemove
+                                document.querySelectorAll('#Imagedisplay')[1].appendChild(btRemove)
+                            })};
+                            setInterval(function(){
+                                if(btRMArray[1]!=0){
+                                    
+                                    document.querySelector('#btRemoveIMG1').onclick=function(){
+                                        btRMArray[1]=0;
+                                        
+                                        InputArray[1].value=''
+                                        formInputArray[3].name=''
+                                        if(OldImageArray[1]){imageDisplay[1].src=OldImageArray[1];}
+                                        else{
+                                            if(imageDisplay.length==2){
+                                            document.querySelectorAll('div.col-md-4.position-relative')[2].remove();
+                                            setTimeout(function(){document.querySelectorAll('div.col-md-4.position-relative')[2].remove();},100)
+                                            }
+                                            if(imageDisplay.length==3){
+                                                document.querySelectorAll('div.col-md-4.position-relative')[2].remove();setTimeout(function(){document.querySelectorAll('div.col-md-4.position-relative')[3].remove();},100)
+                                            }
+                                            if(imageDisplay.length==4){setTimeout(function(){document.querySelectorAll('div.col-md-4.position-relative')[2].remove();},100)
+                                            };imageDisplay.pop(1)
+                                    };setTimeout(function(){addNewImgTAG();},100)
+                                        };
+                                            
+                                }
+                            
+                        },500)
+                        if(InputArray[2]){InputArray[2].addEventListener('change',function(event){
+                            Imagefile = event.target.files[0];
+                            
+                                dataTransfer=new DataTransfer()
+                                dataTransfer.items.add(event.target.files[0])
+                                InputArray[2].files=dataTransfer.files
+                                formInputArray[4].files=dataTransfer.files
+                                formInputArray[4].name=IDimageArray[2]
+                                fileEditArray[2].value=true
+                                if(Imagefile){
+                                    const FileImg = new FileReader();
+                                    FileImg.readAsDataURL(Imagefile);
+                                    FileImg.onload=function(e){
+                                        imageDisplay[2].src=e.target.result;
+                                    }
+                                };
+                                btRemove=document.createElement('img')
+                                btRemove.style.width='30px',btRemove.style.cursor='pointer',btRemove.style.position='relative',btRemove.style.left='0',btRemove.style.right='0',btRemove.style.bottom='265px',btRemove.style.zIndex='1',btRemove.src='https://images.icon-icons.com/603/PNG/96/delete_unapprove_discard_remove_x_red_icon-icons.com_55984.png'
+                                btRemove.id='btRemoveIMG'
+                                btRMArray[2]=btRemove
+                                document.querySelectorAll('#Imagedisplay')[2].appendChild(btRemove)
+                            })};
+                            setInterval(function(){
+                                if(btRMArray[2]!=0){
+                                    document.querySelector('#btRemoveIMG2').onclick=function(){
+                                        btRMArray[2]=0;
+                                        document.querySelector('#btRemoveIMG2').remove();
+                                        InputArray[2].value=''
+                                        formInputArray[4].name=''
+                                        if(OldImageArray[2]){imageDisplay[2].src=OldImageArray[2]}
+                                        else{
+                                            if(imageDisplay.length==2){
+                                            document.querySelectorAll('div.col-md-4.position-relative')[2].remove();
+                                            setTimeout(function(){document.querySelectorAll('div.col-md-4.position-relative')[2].remove();},100)
+                                            imageDisplay.pop(1)
+                                        }else{
+                                            document.querySelectorAll('div.col-md-4.position-relative')[3].remove();
+                                            setTimeout(function(){document.querySelectorAll('div.col-md-4.position-relative')[3].remove();},100)
+                                            imageDisplay.pop(2)
+                                        }     
+                                            
+                                        };setTimeout(function(){addNewImgTAG();},100)
+                                            };
+                                            
+                                        
+                                }else{return}
+                            
+                        },500)
+                        if(InputArray[3]){InputArray[3].addEventListener('change',function(event){
+                            Imagefile = event.target.files[0];
+                                dataTransfer=new DataTransfer()
+                                dataTransfer.items.add(event.target.files[0])
+                                InputArray[3].files=dataTransfer.files
+                                formInputArray[5].files=dataTransfer.files
+                                formInputArray[5].name=IDimageArray[3]
+                                fileEditArray[3].value=true
+                                if(Imagefile){
+                                    const FileImg = new FileReader();
+                                    FileImg.readAsDataURL(Imagefile);
+                                    FileImg.onload=function(e){
+                                        imageDisplay[3].src=e.target.result;
+                                    }
+                                };
+                                btRemove=document.createElement('img')
+                                btRemove.style.width='30px',btRemove.style.cursor='pointer',btRemove.style.position='relative',btRemove.style.left='0',btRemove.style.right='0',btRemove.style.bottom='265px',btRemove.style.zIndex='1',btRemove.src='https://images.icon-icons.com/603/PNG/96/delete_unapprove_discard_remove_x_red_icon-icons.com_55984.png'
+                                btRemove.id='btRemoveIMG'
+                                btRMArray[3]=btRemove
+                                document.querySelectorAll('#Imagedisplay')[3].appendChild(btRemove)
+                            })};
+                            setInterval(function(){
+                                if(btRMArray[3]!=NaN && btRMArray[3]){
+                                    btRMArray[3].onclick=function(){
+                                        console.log(formInputArray)
+                                        InputArray[3].value=''
+                                        formInputArray[5].name=''
+                                        if(OldImageArray[3]){imageDisplay[3].src=OldImageArray[3]}
+                                        else{
+                                            document.querySelectorAll(`div.col-md-4.position-relative`)[3].remove();
+                                            imageDisplay.pop(3);
+                                            };addNewImgTAG();
+                                            
+                                        setTimeout(function(){btRMArray[4]=0;},100)
+                                        };
+                                }else{return};
+                            
+                            },500)
+                
+                        
+                    </script>
+
+                </div>
+                
+                <button type="submit" id="btActivePost" class="btn btn-primary w-100">Editar</button>
+                <script>
+                    function verifyInfos(){
+                        if(document.querySelector('#titulo').innerHTML!=document.querySelector('#titulo_new').value){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#titulo_new').value
+                            tag.name='tituloNew'
+                            document.querySelector('#imagePost').appendChild(tag)
+                        }
+                        if(document.querySelector('#descricao').innerHTML!=document.querySelector('#descricao_new').value){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#descricao_new').value
+                            tag.name='descricaoNew'
+                            document.querySelector('#imagePost').appendChild(tag)
+                        }
+                        if(document.querySelector('#petSexo').value!=document.querySelector('#sexoBase').innerHTML){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#petSexo').value
+                            tag.name='sexoNew'
+                            document.querySelector('#imagePost').appendChild(tag)
+                        }
+                        if(document.querySelector('#petType').value!=document.querySelector('#typeBase').innerHTML){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#petType').value
+                            tag.name='typeNew'
+                            document.querySelector('#imagePost').appendChild(tag)
+                        }
+                        if(document.querySelector('#idade').innerHTML!=document.querySelector('#idade_new').value){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#idade_new').value
+                            tag.name='idadeNew'
+                            document.querySelector('#imagePost').appendChild(tag)
+                        }
+                        if(document.querySelector('#petCastramento').value!=document.querySelector('#castradoBase').innerHTML){
+                            tag=document.createElement('input');
+                            tag.value=document.querySelector('#petCastramento').value
+                            tag.name='castramentoNew'
+                            document.querySelector('#imagePost').appendChild(tag)
+                        }
+                    }
+                    document.querySelector('#btActivePost').addEventListener('click', function(){
+                        verifyInfos();
+                        setTimeout(function(){document.querySelector('#PostEdit').click()},500)
+                    })
+                </script>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+    }
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+</style>
+    
+</form>
+{%endblock%}

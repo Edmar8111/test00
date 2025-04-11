@@ -1,0 +1,598 @@
+{%extends 'html/home.html'%}
+
+{%block head%}
+    <link rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <meta name="csrf-token" content="{%csrf_token%}">
+    <style>
+/* Estilo da barra de navegação */
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+
+
+/*Carrosel*/
+.main-image-container {
+      position: relative;
+      width: 100%;
+      height:500px;
+      overflow: hidden; /* Para esconder imagens fora da área visível */
+      background-color: #d3d3d3;
+    }
+    .main-image {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #555;
+      transition: transform 0.5s ease-in-out; /* Animação suave de movimento */
+    }
+    .slide-left-enter {
+      transform: translateX(100%);
+    }
+    .slide-left-exit {
+      transform: translateX(-100%);
+    }
+    .slide-right-enter {
+      transform: translateX(-100%);
+    }
+    .slide-right-exit {
+      transform: translateX(100%);
+    }
+    .thumbnail {
+      width: 100px;
+      height: 100px;
+      background-color: #d3d3d3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+    .thumbnail.active {
+      border: 2px solid #007bff;
+    }
+    .containerInfoPub{
+        display: flex;
+        width: 50%;
+        justify-content: center;
+        position: absolute;
+        right:-350px;
+        top:55px;
+    }
+/*Fim Carrosel*/
+
+/* Container da descrição e botões */
+.description-container {
+    width: 95%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Estilo da descrição */
+.description h2 {
+    font-size: 1.8em;
+    color: #6a0dad;
+    margin-bottom: 10px;
+}
+
+.description p {
+    font-size: 1.1em;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Estilo dos botões */
+.buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-adopt,
+.btn-message {
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-adopt {
+    background-color: #6a0dad;
+    color: white;
+}
+
+.btn-message {
+    background-color: #4b0082;
+    color: white;
+}
+
+.btn-adopt:hover {
+    background-color: #4b0082;
+    transform: scale(1.05);
+}
+
+.btn-message:hover {
+    background-color: #6a0dad;
+    transform: scale(1.05);
+}
+
+/* Campo de Mensagem */
+.message-field {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.message-field textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical; /* Permite redimensionar verticalmente */
+}
+
+.message-field textarea:focus {
+    border-color: #6a0dad;
+    outline: none;
+}
+
+.btn-send {
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    background-color: #6a0dad;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-send:hover {
+    background-color: #4b0082;
+    transform: scale(1.05);
+}
+
+/* Classe para ocultar o campo de mensagem */
+.hidden {
+    display: none;
+}
+
+/* Estilo do Modal */
+.modal {
+    display: none; /* Oculta o modal por padrão */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro semi-transparente */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Garante que o modal fique acima de outros elementos */
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+.close-modal:hover {
+    color: #6a0dad;
+}
+
+.modal h2 {
+    font-size: 1.5em;
+    color: #6a0dad;
+    margin-bottom: 15px;
+}
+
+.modal textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical; /* Permite redimensionar verticalmente */
+    margin-bottom: 15px;
+}
+
+.modal textarea:focus {
+    border-color: #6a0dad;
+    outline: none;
+}
+
+.btn-send {
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    background-color: #6a0dad;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-send:hover {
+    background-color: #4b0082;
+    transform: scale(1.05);
+}
+
+/* Classe para mostrar o modal */
+.hidden {
+    display: none;
+}
+
+.show-modal {
+    display: flex;
+}
+
+    </style>
+{%endblock%}
+<body>
+   
+<!--Carossel-->
+{%block home%}
+    <div class="container text-center mt-5" style="max-width: 750px;position: relative;margin-left: 250px;">
+        <div class="containerInfoPub">
+            <a href="{%url 'post_detail' name=pubInfoObject.titulo id=pubInfoObject.id %}" style="border: 1px solid black;width: 290px;display: flex;align-items: center;flex-direction: column;cursor:pointer;">
+              <img src="#" alt="" style="width: 200px;">
+              <p>NOME: {{pubInfoObject.titulo}}</p>
+              <p>RAÇA: {{pubInfoObject.raca}}</p>
+              <p>CASTRADO: {{pubInfoObject.castrado}}</p>
+              <p>IDADE: {{pubInfoObject.idade}}</p>
+              <p>DATA: {{pubInfoObject.data_pub}}</p>
+              <p>DESCRIÇÃO: {{pubInfoObject.desc}}</p>
+            </a>
+        </div>
+        {%if verify == 1 and user_id != pubInfoObject.creator %}
+        <!-- executa o request de post via click_fav -->
+        <form action="{%url 'post_detail' id=user_id name=pubInfoObject.titulo%}" method="POST">
+            {%csrf_token%}
+            <button style="display:none;" id="click_fav" name='click_fav' value="0"></button>
+        </form>
+        <!-- icon fav --remove -->
+        <div style="position: relative;z-index: 1;height:25px;top:25px;display:flex;justify-self:right;">
+            {%if fav_on == True %}
+            <img id='favorite_icon' name="favorite_icon" src="https://www.svgrepo.com/show/422431/favorite-heart-interface.svg" alt="favorite-icon" style="width: 35px;z-index: 1;background-color: aliceblue;border-radius: 10px;cursor: pointer;">
+            {%else%}
+            <img id='favorite_icon' name="favorite_icon" src="https://www.svgrepo.com/show/448767/favorite.svg" alt="favorite-icon" style="width: 35px;background-color: aliceblue;border-radius: 10px;cursor: pointer;">
+            {%endif%}
+        </div>
+        <script>
+            //function de execução de click_fav
+            document.querySelector('#favorite_icon').addEventListener('click', function(event){
+                
+                if(document.querySelector('#favorite_icon').src=='https://www.svgrepo.com/show/448767/favorite.svg'){
+                    document.querySelector('#click_fav').value=1
+                    console.log(document.querySelector('#click_fav').value)
+                    document.querySelector('#favorite_icon').src='https://www.svgrepo.com/show/422431/favorite-heart-interface.svg'
+                }else{
+                    document.querySelector('#click_fav').value=2
+                    console.log(document.querySelector('#click_fav').value)
+                    document.querySelector('#favorite_icon').src='https://www.svgrepo.com/show/448767/favorite.svg'}
+                setTimeout(function(){document.querySelector('#click_fav').click()},500)
+            })
+        </script>
+        {%endif%}
+        <!-- Main Image -->
+        <div class="main-image-container">
+          <img id="main-image" src='' class="main-image">
+          </img>
+          <button id="prev-btn" class="btn btn-outline-dark position-absolute start-0 top-50 translate-middle-y">
+            &lt;
+          </button>
+          <button id="next-btn" class="btn btn-outline-dark position-absolute end-0 top-50 translate-middle-y">
+            &gt;
+          </button>
+        </div>
+    
+        <!-- Thumbnails -->
+        <div class="d-flex justify-content-center mt-3" id="img_container">
+            <img class="thumbnail active" id='img_0' data-index="0" src="{{img0.url}}">
+            {%for img_pub in pub_file%}
+            
+            <img class="thumbnail" data-index="0" src="{{img_pub.url}}">
+            <script>
+                //adicionar id variavel
+                for(a=0;a<document.querySelectorAll('#img_container img').length;a++){
+                    document.querySelectorAll('#img_container img')[a].id=`img${a}`
+                    document.querySelectorAll('#img_container img')[a].value=parseInt([a])
+                }
+            </script>
+            {%endfor%}
+        </div>
+      </div>
+
+<!--Fim Carossel--> 
+    
+<!-- Descrição e Botões -->
+
+<div class="description-container">
+    {%if verify == 1 and user_id == pubInfoObject.creator %}
+    
+        <a href="{% url 'edit_post' hash=key_user id=pubInfoObject.id %}" class="btn btn-primary">Editar Publicação</a>
+        
+            <!-- Modal da exclução da postagem-->
+        <!-- Formulário de exclusão -->
+        <form action="{%url 'delete_post' hash=key_user id=pubInfoObject.id%}" method="POST">
+            {% csrf_token %}
+            <button style="display: none;" id="del_c"></button>
+        </form>
+
+        <form action="{%url 'delete_post' hash=key_user id=pubInfoObject.id %}" method="POST" style="display: none;">
+            {%csrf_token%}
+            <button id="delete_pub"></button>
+        </form>
+        <!-- Background escuro -->
+        <div id="span_back"
+            style="display:none;position: fixed;width: 100vw;height: 100vh;background-color: rgba(0, 0, 0, 0.5);
+            top: 0;left: 0;z-index: 9;">
+        </div>
+
+        <!-- Modal de confirmação -->
+        <div id="bt_confirma"
+            style="display: none;position: fixed;width: 300px;height: 180px;border-radius: 10px;
+            background-color: white;padding: 20px;z-index: 10;box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            left: 50%;top: 50%;transform: translate(-50%, -50%);">
+            <p style="margin: 0 0 15px 0;font-size: 16px;font-weight: bold;text-align: center;">
+                Deseja excluir a postagem <b>{{ pubInfoObject.titulo }}</b> permanentemente?<br>
+                <small style="color: red;">(Todos os dados vinculados serão apagados)</small>
+            </p>
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <button style="background-color: red;color: white;padding: 8px 12px;border-radius: 5px; border: none; cursor: pointer;" 
+                    id="confirm_del">Excluir</button>
+                <button style="background-color: gray;color: white;padding: 8px 12px;border-radius: 5px; border: none; cursor: pointer;" 
+                    id="bt_cancel">Cancelar</button>
+            </div>
+        </div>
+        <script>
+            document.querySelector('#confirm_del').addEventListener('click', function(){
+                setTimeout(function(){document.querySelector('#delete_pub').click()},250)
+            })
+        </script>
+        <!-- Botão de deletar -->
+        <button id="botao_init" class="btn btn-danger" style="margin: 15px;">Deletar postagem</button>
+
+                <!--Fim Modal da exclução da postagem-->
+                
+          
+          {%endif%}
+    <div class="description">
+        <h2>Descrição do Pet</h2>
+        <p>
+            Aqui você pode adicionar uma descrição detalhada sobre o pet. Por exemplo:
+            "Este é um cachorro muito brincalhão e carinhoso, ideal para famílias com crianças."
+        </p>
+    </div>
+    {%if verify == 1 and user_id != creator %}
+    <div class="buttons">
+        <button class="btn-message" onclick="openModal()">Adotar</button>
+    </div>
+    {%endif%}
+</div>
+<!-- Fim Descrição e Botões -->
+<!-- Modal -->
+<div id="message-modal" class="modal hidden">
+    <div class="modal-content">
+        {%if verify == 1 and user_id != creator %}
+        <form style="display:none;" action="{%url 'request_adot' id_pub=pubInfoObject.id hash=key_user name=pubInfoObject.titulo %}" method="POST" enctype="multipart/form-data">
+            {%csrf_token%}
+            <button id="request_adotar"></button>
+            <input type='text' name="message_input" id="message_input" value="">
+        </form>
+        {%endif%}
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2>Enviar Mensagem</h2>
+        <textarea id="message-input"  placeholder="Digite sua mensagem aqui..." ></textarea>
+        <button class="btn-send" id onclick="sendMessage()">Enviar</button>
+        
+    </div>
+</div>
+<!-- Fim Modal -->
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const images = [];
+        for(a=0;a<document.querySelectorAll('#img_container img').length;a++){
+            images.push(document.querySelectorAll('#img_container img')[a].src)
+        }
+        let currentIndex = 0;
+    
+        const mainImage = document.getElementById("main-image");
+        const thumbnails = document.querySelectorAll("#img_container img");
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+    
+        // Atualiza a imagem principal com animação lateral
+        function updateGallery(index, direction) {
+          const oldIndex = currentIndex;
+          currentIndex = index;
+    
+          // Determina as classes de entrada e saída com base na direção
+          const exitClass = direction === "left" ? "slide-left-exit" : "slide-right-exit";
+          const enterClass = direction === "left" ? "slide-left-enter" : "slide-right-enter";
+    
+          // Aplica animação de saída
+          mainImage.classList.add(exitClass);
+          setTimeout(() => {
+            mainImage.classList.remove(exitClass); // Remove a saída antiga
+            mainImage.src = images[currentIndex]; // Atualiza o conteúdo
+            mainImage.classList.add(enterClass); // Animação de entrada
+            thumbnails.forEach((thumb, i) => thumb.classList.toggle("active", i === currentIndex));
+    
+            setTimeout(() => {
+              mainImage.classList.remove(enterClass); // Remove a classe de entrada
+            }, 500); // Duração da transição
+          }, 500);
+        }
+    
+        // Botão "Anterior"
+        prevBtn.addEventListener("click", () => {
+          const newIndex = (currentIndex - 1 + images.length) % images.length;
+          updateGallery(newIndex, "right");
+        });
+    
+        // Botão "Próximo"
+        nextBtn.addEventListener("click", () => {
+          const newIndex = (currentIndex + 1) % images.length;
+          updateGallery(newIndex, "left");
+        });
+    
+        // Clique na miniatura
+        thumbnails.forEach((thumb) => {
+          thumb.addEventListener("click", () => {
+            newIndex = parseInt(thumb.value);
+            if (newIndex !== currentIndex) {
+                
+              const direction = newIndex > currentIndex ? "left" : "right";
+              updateGallery(newIndex, direction);
+            }
+          });
+        });
+    
+        // Inicializa a galeria
+        updateGallery(currentIndex, "left");
+
+// Fim Carrosel
+
+// Função para mostrar/ocultar o campo de mensagem
+function toggleMessageField() {
+    const messageField = document.getElementById('message-field');
+    messageField.classList.toggle('hidden'); // Alterna a visibilidade
+}
+
+
+// Função para abrir o modal
+function openModal() {
+    const modal = document.getElementById('message-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('show-modal');
+}
+
+// Função para fechar o modal
+function closeModal() {
+    const modal = document.getElementById('message-modal');
+    modal.classList.remove('show-modal');
+    modal.classList.add('hidden');
+}
+
+// Função para enviar a mensagem
+function sendMessage() {
+    const messageInput = document.getElementById('message-input');
+    const message = messageInput.value.trim();
+    if (message) {
+        document.querySelector("#message_input").value=messageInput.value
+        alert(`Mensagem enviada: "${message}"`);
+        messageInput.value = ''; // Limpa o campo de texto
+        closeModal(); // Fecha o modal após o envio
+        setTimeout(function(){
+            document.querySelector('#request_adotar').click()},500)
+    } else {
+        alert('Por favor, digite uma mensagem antes de enviar.');
+    }
+
+}
+
+// Fechar o modal ao clicar fora dele
+window.onclick = function (event) {
+    const modal = document.getElementById('message-modal');
+    if (event.target === modal) {
+        closeModal();
+    }
+};
+
+// modal de mesagem de exclução da postgem
+            active = 0
+        
+            function close_span() {
+                document.querySelector('#bt_confirma').style.display = 'none'
+                document.querySelector('#span_back').style.display = 'none'
+            }
+            document.querySelector('#botao_init').addEventListener('click', function () {
+                document.querySelector('#bt_confirma').style.display = 'flex'
+                document.querySelector('#span_back').style.display = 'block'
+                setTimeout(function () { if (active == 0) { active++ } }, 100)
+            })
+            document.addEventListener('click', function (e) {
+                click_in = document.querySelector('#bt_confirma').contains(e.target)
+                if (!click_in && active > 0) {
+                    close_span()
+                }
+                setTimeout(function () { if (active > 0 && document.querySelector('#bt_confirma').style.display == 'none') { active = 0 } }, 100)
+            })
+            document.querySelector('#confirm_del').addEventListener('click', function () {
+                setTimeout(function () { document.querySelector('#del_c').click() }, 500)
+            })
+        
+            document.querySelector('#bt_cancel').addEventListener('click', function () {
+                document.querySelector('#bt_confirma').style.display = 'none'
+                document.querySelector('#span_back').style.display = 'none'
+            })
+            console.log(document.querySelector('#botao_init').contains(e.target))
+// Fim modal da exclução da postagem 
+
+document.addEventListener("DOMContentLoaded", function () {
+        let botaoInit = document.getElementById("botao_init");
+        let modal = document.getElementById("bt_confirma");
+        let overlay = document.getElementById("span_back");
+        let botaoCancelar = document.getElementById("bt_cancel");
+
+        botaoInit.addEventListener("click", function () {
+            modal.style.display = "block";
+            overlay.style.display = "block";
+        });
+
+        botaoCancelar.addEventListener("click", function () {
+            modal.style.display = "none";
+            overlay.style.display = "none";
+        });
+
+        overlay.addEventListener("click", function () {
+            modal.style.display = "none";
+            overlay.style.display = "none";
+        });
+    });
+        
+</script>
+{%endblock%}

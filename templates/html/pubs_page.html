@@ -1,0 +1,37 @@
+{%extends 'html/home.html'%}
+
+{%block home%}
+<section style="display: flex;justify-content: center;align-items: center;width: 100%;margin-top: 30px;">
+    {%for pubIndex in PubObject%}
+        {%if pubIndex.on_true != 0 %}
+            <div class="statusPub" style="z-index:1;position:relative;top:150px;left:215px;background-color: green;border-radius: 5px;border: 1px solid black;font-family: monospace;color: aliceblue;">Ativa</div>
+        {%else%}
+            <div class="statusPub" style="z-index:1;position:relative;top:150px;left:215px;background-color: crimson;border-radius: 5px;border: 1px solid black;font-family: monospace;color: aliceblue;">Desativa</div>
+        {%endif%}
+        <a href="{% url 'post_detail' name=pubIndex.titulo id=pubIndex.id %}" class="card1">
+            <img src="{{ pubIndex.imgpub.url }}" alt="Imagem do pet">
+            <div class="card-content1">
+                <p><strong>Nome:</strong> {{ pubIndex.titulo }}</p>
+                <p><strong>Raça:</strong> {{ pubIndex.raca }}</p>
+                <p><strong>Castrado:</strong> {{ pubIndex.castramento}}</p>
+                <p><strong>Idade:</strong> {{ pubIndex.idade }}</p>
+                
+            </div>
+        </a>
+{%endfor%}
+</section>
+<style>
+    /* Adicionando efeitos de hover e sombra */
+    .container div:hover {
+        transform: scale(1.05);
+    }
+
+    .container div img:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .container div a:hover {
+        color: #0056b3;
+    }
+</style>
+{%endblock%}

@@ -1,0 +1,230 @@
+{%extends 'html/home.html'%}
+
+{%block home%}
+<style>
+/* Contêiner principal */
+.perfil-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os botões horizontalmente */
+    justify-content: flex-start; /* Mantém o conteúdo na parte superior */
+    min-height: 100vh; /* Preenche a altura da tela */
+    width: 100%;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilização base para todos os botões e links */
+.perfil-container button, 
+.perfil-container a {
+    width: 100%; /* Garante que todos os botões tenham a mesma largura */
+    max-width: 300px; /* Define um tamanho máximo */
+    height: 45px; /* Altura padrão */
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 10px 0;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Corrige o tamanho dos botões dentro do <form> */
+.perfil-container form {
+    width: 100%;
+    max-width: 300px;
+}
+
+/* Estilos específicos para os botões de ação */
+#click_logout {
+    background: linear-gradient(135deg, #ff4d6d, #cc3b56);
+}
+
+.click_edit {
+    background: linear-gradient(135deg, #17a2b8, #128194);
+}
+
+.criar_publicação {
+    background: linear-gradient(135deg, #28a745, #218838);
+}
+
+.pubs {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.fav {
+    background: linear-gradient(135deg, #ffc107, #d39e00);
+    color: black;
+}
+
+#botao_init {
+    background: linear-gradient(135deg, #ff4d6d, #cc3b56);
+}
+
+/* Estilos para o Modal */
+#span_back {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: dimgray;
+    opacity: 50%;
+}
+
+#bt_confirma {
+    display: none;
+    border: 1px solid black;
+    width: 250px;
+    height: 150px;
+    top: 150px;
+    position: absolute;
+    justify-self: anchor-center;
+    justify-content: space-around;
+    align-items: end;
+    z-index: 1;
+    background-color: aliceblue;
+}
+#bt_confirma p {
+    position: absolute;
+    width: 215px;
+    top: 5px;
+}
+
+/* Alterando cores dos botões no modal */
+#confirm_del {
+    background-color: red; /* Cor vermelha para o botão Excluir */
+    color: white;
+    margin-bottom: 5px;
+}
+
+#bt_cancel {
+    background-color: gray; /* Cor cinza para o botão Cancelar */
+    color: white;
+    margin-bottom: 5px;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .perfil-container {
+        width: 95%;
+    }
+
+    .perfil-container button, .perfil-container a {
+        width: 100%;
+    }
+}
+/* Estilos para o Modal */
+#span_back {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: dimgray;
+    opacity: 50%;
+}
+
+#bt_confirma {
+    display: none;
+    border: 1px solid black;
+    width: 250px;
+    height: 150px;
+    top: 150px;
+    position: absolute;
+    justify-self: anchor-center;
+    justify-content: space-around;
+    align-items: end;
+    z-index: 1;
+    background-color: aliceblue;
+}
+
+#bt_confirma p {
+    position: absolute;
+    width: 215px;
+    top: 5px;
+}
+
+/* Alterando cores dos botões no modal */
+#bt_confirma #confirm_del {
+    background-color: red !important; /* Forçando a cor vermelha para o botão Excluir */
+    color: white !important;
+    margin-bottom: 5px;
+}
+
+#bt_confirma #bt_cancel {
+    background-color: gray !important; /* Forçando a cor cinza para o botão Cancelar */
+    color: white !important;
+    margin-bottom: 5px;
+}
+
+</style>
+<div class="perfil-container">
+<h1>Hello, {{user_name}}!</h1>
+
+<form method="GET">
+    {%csrf_token%}
+    <button name='click_logout' id="click_logout" value="0" action="{%url 'perfil_user' key_inst=key_user%}">SAIR</button>
+    <script>
+        document.querySelector('#click_logout').addEventListener('click', function(){document.querySelector('#click_logout').value=1})
+    </script>
+
+    <button name="click_edit" class="click_edit" action="{%url 'complemento_info'%}">EDITAR PERFIL</button>
+</form>
+{%if ong_true %}<a href="{%url 'pub_create' inst_hash=key_user%}" class="criar_publicação">CRIAR PUBLICAÇÃO</a>
+<a href="{%url 'pubIndex' inst_hash=key_user%}" class="pubs">MINHAS PUBLICAÇÕES</a>
+{%endif%}
+<a href="{%url 'request_fav'%}" class="fav">FAVORITADOS</a>
+<form action="{%url 'delete_post' id=user_id hash=key_user %}" method="POST" enctype="multipart/form-data">
+    {%csrf_token%}
+    <button style="display: none;" id="del_c"></button>
+    <input type="number" name="integrar" id="integrar" value=0 style="display: none;">
+</form>
+<div id="span_back" style="display:none;position: absolute;width: 100%;height: 100%;background-color: dimgray;opacity: 50%;"></div>
+<span id="bt_confirma" style="display: none;border: 1px solid black;width: 250px;height: 150px;top:150px;position: absolute;justify-self: anchor-center;justify-content:space-around;align-items:end;z-index: 1;background-color: aliceblue;">
+    <p style="position: absolute;width: 245px;top: 5px;">Deseja Excluir a Conta {{user_name}} Permanentemente(obs: Todos os dados vinculados serão apagados)</p>
+    <button style="background-color: red;color: aliceblue;margin-bottom: 5px;" id="confirm_del">Excluir</button>
+    <button style="background-color: dimgray;color: aliceblue;margin-bottom: 5px;" id="bt_cancel">Cancel</button>
+</span>
+
+<button id="botao_init">EXCLUIR CONTA</button>
+</div>
+<script>
+    active=0
+    
+    function close_span(){
+        document.querySelector('#bt_confirma').style.display='none'
+        document.querySelector('#span_back').style.display='none'}
+    document.querySelector('#botao_init').addEventListener('click', function(){
+        document.querySelector('#bt_confirma').style.display='flex'
+        document.querySelector('#span_back').style.display='block'
+        setTimeout(function(){if(active==0){active++}},100)
+    })
+    document.addEventListener('click', function(e){
+        click_in=document.querySelector('#bt_confirma').contains(e.target)
+        if(!click_in && active>0){
+            close_span()}
+            setTimeout(function(){if(active>0 && document.querySelector('#bt_confirma').style.display=='none'){active=0}},100)
+    })
+    document.querySelector('#confirm_del').addEventListener('click',function(){
+        setTimeout(function(){
+            document.querySelector('#integrar').value=1;
+            document.querySelector('#del_c').click()},500)
+    })
+    
+    document.querySelector('#bt_cancel').addEventListener('click', function(){
+        document.querySelector('#bt_confirma').style.display='none'
+        document.querySelector('#span_back').style.display='none'
+    })
+    console.log(document.querySelector('#botao_init').contains(e.target))
+
+    
+</script>
+{%endblock%}
